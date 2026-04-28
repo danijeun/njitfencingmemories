@@ -72,6 +72,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
             >
               Edit profile
             </Link>
+            <Link
+              href="/memories"
+              className="rounded border border-[color:var(--color-ink)]/30 px-3 py-2 text-sm"
+            >
+              Memories
+            </Link>
             <form action={signOut}>
               <button type="submit" className="text-sm underline">
                 Sign out
