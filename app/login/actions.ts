@@ -22,7 +22,7 @@ export async function sendMagicLink(formData: FormData) {
   // and gate access at /auth/callback — keeps the migration small.
 
   const h = await headers();
-  const origin = h.get("origin") ?? `https://${h.get("host")}`;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? h.get("origin") ?? `https://${h.get("host")}`;
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
