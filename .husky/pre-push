@@ -1,0 +1,1 @@
+pnpm exec vitest related --run --passWithNoTests

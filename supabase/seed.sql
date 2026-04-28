@@ -1,0 +1,1 @@
+-- Seed data goes here. Sprint 2 will populate founding memories.
