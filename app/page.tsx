@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-24">
@@ -12,7 +14,12 @@ export default function Home() {
           Stories from meets, training, road trips, coaches, teammates. Add yours when we open
           submissions.
         </p>
-        <p className="mt-10 font-mono text-xs text-[color:var(--color-ink)]">Coming soon.</p>
+        <Link
+          href="/login"
+          className="mt-10 inline-flex min-h-11 items-center justify-center rounded-full bg-[color:var(--color-ink)] px-6 font-mono text-xs uppercase tracking-widest text-[color:var(--color-paper)] transition hover:opacity-90"
+        >
+          Log in
+        </Link>
       </div>
     </main>
   );
