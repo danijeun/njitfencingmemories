@@ -3,6 +3,12 @@ import { NextResponse, type NextRequest } from "next/server";
 
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
+const PUBLIC_PATHS = ["/", "/login", "/auth/callback", "/not-on-roster"];
+
+function isPublic(pathname: string) {
+  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -23,6 +29,48 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+
+  if (!user) {
+    if (isPublic(pathname)) return response;
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("from", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("onboarded_at")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!profile) {
+    if (pathname === "/not-on-roster") return response;
+    await supabase.auth.signOut();
+    const url = request.nextUrl.clone();
+    url.pathname = "/not-on-roster";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  if (!profile.onboarded_at && !pathname.startsWith("/onboarding") && pathname !== "/logout") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/onboarding/class";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  if (profile.onboarded_at && (pathname === "/login" || pathname.startsWith("/onboarding"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/profile/me";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   return response;
 }
