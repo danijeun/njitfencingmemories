@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { MemoryCard } from "@/components/memory/MemoryCard";
+import { MemoryFab } from "@/components/memory/MemoryFab";
 
 export const dynamic = "force-dynamic";
 
@@ -28,9 +29,9 @@ export default async function MemoriesPage() {
         className="mx-auto mt-10 max-w-7xl columns-1 gap-6 sm:columns-2 lg:columns-3 2xl:columns-4 [&>*]:mb-6 [&>*]:break-inside-avoid"
         aria-label="Memory feed"
       >
-        {(memories ?? []).map((m) => (
+        {(memories ?? []).map((m, i) => (
           <Link key={m.id} href={`/memories/${m.id}`} className="block">
-            <MemoryCard memory={m} />
+            <MemoryCard memory={m} index={i} />
           </Link>
         ))}
         {(memories ?? []).length === 0 ? (
@@ -39,6 +40,7 @@ export default async function MemoriesPage() {
           </p>
         ) : null}
       </section>
+      <MemoryFab />
     </main>
   );
 }

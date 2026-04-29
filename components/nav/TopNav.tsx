@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
+import { Button } from "@/components/ui/button";
+import { MobileNav } from "@/components/nav/MobileNav";
 
 export async function TopNav() {
   const supabase = await createClient();
@@ -22,8 +24,15 @@ export async function TopNav() {
     }
   }
 
+  const links = user
+    ? [
+        { href: "/memories", label: "Memories" },
+        { href: profileHref, label: "Profile" },
+      ]
+    : [];
+
   return (
-    <header className="sticky top-0 z-40 border-b border-[color:var(--color-ink)]/10 bg-[color:var(--color-paper)]/85 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--color-paper)]/70">
+    <header className="sticky top-0 z-40 border-b border-[color:var(--color-ink)]/10 bg-[color:var(--color-paper)]/85 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--color-paper)]/70 pt-safe">
       <nav
         aria-label="Primary"
         className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-10"
@@ -35,39 +44,31 @@ export async function TopNav() {
           NJIT Fencing
         </Link>
 
-        <div className="flex items-center gap-2 sm:gap-4">
-          {user ? (
-            <>
-              <Link
-                href="/memories"
-                className="rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
-              >
-                Memories
-              </Link>
-              <Link
-                href={profileHref}
-                className="rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
-              >
-                Profile
-              </Link>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-body)] hover:opacity-70"
+        {user ? (
+          <>
+            <div className="hidden items-center gap-2 md:flex">
+              {links.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
                 >
+                  {l.label}
+                </Link>
+              ))}
+              <form action={signOut}>
+                <Button type="submit" variant="ghost" size="sm">
                   Sign out
-                </button>
+                </Button>
               </form>
-            </>
-          ) : (
-            <Link
-              href="/login"
-              className="inline-flex min-h-9 items-center justify-center rounded-full bg-[color:var(--color-ink)] px-4 font-mono text-xs uppercase tracking-widest text-[color:var(--color-paper)] hover:opacity-90"
-            >
-              Log in
-            </Link>
-          )}
-        </div>
+            </div>
+            <MobileNav links={links} signOutAction={signOut} />
+          </>
+        ) : (
+          <Button asChild size="sm">
+            <Link href="/login">Log in</Link>
+          </Button>
+        )}
       </nav>
     </header>
   );

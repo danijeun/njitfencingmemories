@@ -9,7 +9,7 @@ export default function OnboardingAvatar() {
         Add a photo. Optional.
       </h1>
       <p className="mt-2 text-[color:var(--color-body)]">JPG or PNG, 5MB max.</p>
-      <form action={saveAvatar} encType="multipart/form-data" className="mt-8 flex flex-col gap-3">
+      <form action={saveAvatar} className="mt-8 flex flex-col gap-3">
         <input id="avatar" name="avatar" type="file" accept="image/*" className="text-sm" />
         <button
           type="submit"

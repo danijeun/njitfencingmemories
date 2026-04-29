@@ -1,3 +1,8 @@
+"use client";
+
+import { m, useReducedMotion } from "motion/react";
+import { cn } from "@/lib/utils";
+
 type MemorySummary = {
   id: string;
   title: string;
@@ -7,9 +12,18 @@ type MemorySummary = {
   published_at: string | null;
 };
 
-export function MemoryCard({ memory }: { memory: MemorySummary }) {
+export function MemoryCard({ memory, index = 0 }: { memory: MemorySummary; index?: number }) {
+  const reduce = useReducedMotion();
   return (
-    <article className="@container group rounded-lg border border-[color:var(--color-rule)] bg-[color:var(--color-paper)] p-4 transition hover:border-[color:var(--color-ink)] @md:p-6">
+    <m.article
+      initial={reduce ? false : { opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: Math.min(index * 0.04, 0.4) }}
+      whileHover={reduce ? undefined : { y: -2 }}
+      className={cn(
+        "@container group rounded-lg border border-[color:var(--color-rule)] bg-[color:var(--color-paper)] p-4 transition-colors hover:border-[color:var(--color-ink)] @md:p-6",
+      )}
+    >
       {memory.cover_path ? (
         <div className="mb-4 aspect-[4/3] overflow-hidden rounded bg-[color:var(--color-rule)] @md:aspect-[3/2]" />
       ) : null}
@@ -21,7 +35,7 @@ export function MemoryCard({ memory }: { memory: MemorySummary }) {
         </time>
       </div>
 
-      <h2 className="mt-2 font-display text-xl leading-tight text-[color:var(--color-ink)] @md:text-2xl">
+      <h2 className="mt-2 font-display text-fluid-xl leading-tight text-[color:var(--color-ink)]">
         {memory.title}
       </h2>
 
@@ -30,6 +44,6 @@ export function MemoryCard({ memory }: { memory: MemorySummary }) {
           {memory.excerpt}
         </p>
       ) : null}
-    </article>
+    </m.article>
   );
 }

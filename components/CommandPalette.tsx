@@ -1,0 +1,90 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Command } from "cmdk";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { BookOpen, PenLine, User, LogIn, Search } from "lucide-react";
+
+type Item = {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  keywords?: string[];
+};
+
+const ITEMS: Item[] = [
+  { label: "Memories feed", href: "/memories", icon: BookOpen, keywords: ["archive", "stories"] },
+  { label: "New memory", href: "/memories/new", icon: PenLine, keywords: ["write", "create"] },
+  { label: "My profile", href: "/profile/me", icon: User, keywords: ["account"] },
+  { label: "Edit profile", href: "/profile/edit", icon: User, keywords: ["settings"] },
+  { label: "Log in", href: "/login", icon: LogIn },
+];
+
+export function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpen((o) => !o);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const go = (href: string) => {
+    setOpen(false);
+    router.push(href);
+  };
+
+  return (
+    <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          className="fixed left-1/2 top-[18%] z-50 w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-lg border border-[color:var(--color-rule)] bg-[color:var(--color-ivory)] shadow-xl"
+        >
+          <DialogPrimitive.Title className="sr-only">Command palette</DialogPrimitive.Title>
+          <Command label="Command palette" loop>
+            <div className="flex items-center gap-2 border-b border-[color:var(--color-rule)] px-3">
+              <Search className="size-4 text-[color:var(--color-ink)]/70" />
+              <Command.Input
+                placeholder="Search or jump to…"
+                className="h-12 w-full bg-transparent text-base outline-none placeholder:text-[color:var(--color-ink)]/50"
+              />
+              <kbd className="hidden font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-ink)]/60 sm:inline">
+                Esc
+              </kbd>
+            </div>
+            <Command.List className="max-h-80 overflow-y-auto p-2">
+              <Command.Empty className="px-3 py-6 text-center font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)]/60">
+                No results.
+              </Command.Empty>
+              <Command.Group
+                heading="Navigate"
+                className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-[color:var(--color-ink)]/60"
+              >
+                {ITEMS.map(({ label, href, icon: Icon, keywords }) => (
+                  <Command.Item
+                    key={href}
+                    value={`${label} ${(keywords ?? []).join(" ")}`}
+                    onSelect={() => go(href)}
+                    className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[color:var(--color-ink)] data-[selected=true]:bg-[color:var(--color-paper)]"
+                  >
+                    <Icon className="size-4" />
+                    {label}
+                  </Command.Item>
+                ))}
+              </Command.Group>
+            </Command.List>
+          </Command>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  );
+}
