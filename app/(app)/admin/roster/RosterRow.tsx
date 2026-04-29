@@ -3,6 +3,17 @@
 import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { removeRosterEntry, updateRosterEntry } from "./actions";
 
 type Row = {
@@ -30,7 +41,6 @@ export function RosterRow({ row }: { row: Row }) {
   }
 
   function onDelete() {
-    if (!confirm(`Remove ${row.email} from the roster?`)) return;
     setError(null);
     const fd = new FormData();
     fd.set("email", row.email);
@@ -109,9 +119,33 @@ export function RosterRow({ row }: { row: Row }) {
         <Button size="sm" variant="ghost" onClick={() => setEditing(true)} disabled={isPending}>
           Edit
         </Button>
-        <Button size="sm" variant="ghost" onClick={onDelete} disabled={isPending}>
-          Delete
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size="sm" variant="ghost" disabled={isPending}>
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove from roster?</AlertDialogTitle>
+              <AlertDialogDescription>
+                {row.full_name} ({row.email}) will lose access to add memories.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel asChild>
+                <Button variant="ghost" size="sm">
+                  Cancel
+                </Button>
+              </AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <Button variant="oxblood" size="sm" onClick={onDelete}>
+                  Remove
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       {error && (
         <p className="w-full text-sm text-[color:var(--color-oxblood)]" role="alert">

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -54,9 +55,16 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
           </p>
         ) : null}
         {coverUrl ? (
-          <div className="mt-8 overflow-hidden rounded-lg border border-[color:var(--color-rule)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={coverUrl} alt="" className="h-auto w-full object-cover" />
+          <div className="relative mt-8 aspect-[3/2] overflow-hidden rounded-lg border border-[color:var(--color-rule)]">
+            <Image
+              src={coverUrl}
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 768px) 42rem, 100vw"
+              className="object-cover"
+              style={{ viewTransitionName: `memory-cover-${memory.id}` }}
+            />
           </div>
         ) : null}
         {memory.excerpt ? (

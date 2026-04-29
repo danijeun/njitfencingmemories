@@ -41,29 +41,28 @@
   --safe-right: env(safe-area-inset-right, 0px);
 }
 
-/* Dark mode: navy base, white fg, red bumped lighter for AA on navy */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-ivory: var(--color-brand-navy);
-    --color-paper: color-mix(in oklab, var(--color-brand-navy) 80%, white);
-    --color-ink: var(--color-brand-white);
-    --color-body: color-mix(in oklab, var(--color-brand-white) 92%, var(--color-brand-navy));
-    --color-rule: color-mix(in oklab, var(--color-brand-gray) 50%, var(--color-brand-navy));
-    --color-oxblood: color-mix(in oklab, var(--color-brand-red) 70%, white);
-    --color-moss: color-mix(in oklab, var(--color-brand-white) 70%, var(--color-brand-navy));
+/* Dark mode: navy base, white fg, red bumped lighter for AA on navy.
+   Toggled via next-themes (class="dark" on <html>). */
+.dark {
+  --color-ivory: var(--color-brand-navy);
+  --color-paper: color-mix(in oklab, var(--color-brand-navy) 80%, white);
+  --color-ink: var(--color-brand-white);
+  --color-body: color-mix(in oklab, var(--color-brand-white) 92%, var(--color-brand-navy));
+  --color-rule: color-mix(in oklab, var(--color-brand-gray) 50%, var(--color-brand-navy));
+  --color-oxblood: color-mix(in oklab, var(--color-brand-red) 70%, white);
+  --color-moss: color-mix(in oklab, var(--color-brand-white) 70%, var(--color-brand-navy));
 
-    --color-bg: var(--color-brand-navy);
-    --color-fg: var(--color-brand-white);
-    --color-muted: color-mix(in oklab, var(--color-brand-white) 70%, var(--color-brand-navy));
-    --color-border: color-mix(in oklab, var(--color-brand-gray) 50%, var(--color-brand-navy));
-    --color-primary: color-mix(in oklab, var(--color-brand-red) 70%, white);
-    --color-primary-fg: var(--color-brand-navy);
-    --color-accent: var(--color-brand-white);
-    --color-ring: color-mix(in oklab, var(--color-brand-red) 70%, white);
+  --color-bg: var(--color-brand-navy);
+  --color-fg: var(--color-brand-white);
+  --color-muted: color-mix(in oklab, var(--color-brand-white) 70%, var(--color-brand-navy));
+  --color-border: color-mix(in oklab, var(--color-brand-gray) 50%, var(--color-brand-navy));
+  --color-primary: color-mix(in oklab, var(--color-brand-red) 70%, white);
+  --color-primary-fg: var(--color-brand-navy);
+  --color-accent: var(--color-brand-white);
+  --color-ring: color-mix(in oklab, var(--color-brand-red) 70%, white);
 
-    --background: var(--color-bg);
-    --foreground: var(--color-fg);
-  }
+  --background: var(--color-bg);
+  --foreground: var(--color-fg);
 }
 
 @theme inline {

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { Button } from "@/components/ui/button";
 import { MobileNav } from "@/components/nav/MobileNav";
+import { ThemeToggle } from "@/components/nav/ThemeToggle";
 
 export async function TopNav() {
   const supabase = await createClient();
@@ -59,13 +60,17 @@ export async function TopNav() {
                   {l.label}
                 </Link>
               ))}
+              <ThemeToggle />
               <form action={signOut}>
                 <Button type="submit" variant="ghost" size="sm">
                   Sign out
                 </Button>
               </form>
             </div>
-            <MobileNav links={links} signOutAction={signOut} />
+            <div className="flex items-center gap-1 md:hidden">
+              <ThemeToggle />
+              <MobileNav links={links} signOutAction={signOut} />
+            </div>
           </>
         ) : (
           <div className="flex items-center gap-2">
@@ -78,6 +83,7 @@ export async function TopNav() {
                 {l.label}
               </Link>
             ))}
+            <ThemeToggle />
             <Button asChild size="sm">
               <Link href="/login">Log in</Link>
             </Button>

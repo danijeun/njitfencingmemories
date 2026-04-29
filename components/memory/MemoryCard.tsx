@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { m, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -30,13 +31,14 @@ export function MemoryCard({ memory, index = 0 }: { memory: MemorySummary; index
       )}
     >
       {memory.cover_path ? (
-        <div className="mb-4 aspect-[4/3] overflow-hidden rounded bg-[color:var(--color-rule)] @md:aspect-[3/2]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded bg-[color:var(--color-rule)] @md:aspect-[3/2]">
+          <Image
             src={coverUrl(memory.cover_path)}
             alt=""
-            loading="lazy"
-            className="h-full w-full object-cover"
+            fill
+            sizes="(min-width: 1536px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            style={{ viewTransitionName: `memory-cover-${memory.id}` }}
           />
         </div>
       ) : null}
