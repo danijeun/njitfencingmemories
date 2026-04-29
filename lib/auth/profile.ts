@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 export type Profile = {
   id: string;
   email: string;
-  role: "athlete" | "alumni";
+  role: "athlete" | "alumni" | "coach";
   class_year: number;
   full_name: string;
   major: string | null;
@@ -11,6 +11,7 @@ export type Profile = {
   bio: string | null;
   slug: string | null;
   onboarded_at: string | null;
+  is_admin: boolean;
 };
 
 export async function getSessionUser() {
