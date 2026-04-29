@@ -17,6 +17,11 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
 
   if (!memory) notFound();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const canEdit = !!user && user.id === memory.author_id;
+
   let author: { full_name: string; slug: string | null } | null = null;
   if (memory.author_id) {
     const { data } = await supabase.rpc("get_public_profile", { p_id: memory.author_id });
@@ -31,12 +36,23 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
   return (
     <main className="flex-1 px-4 py-10 sm:px-6 lg:px-10">
       <article className="mx-auto max-w-2xl">
-        <Link
-          href="/memories"
-          className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-body)] hover:opacity-70"
-        >
-          ← All memories
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            href="/memories"
+            className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-body)] hover:opacity-70"
+          >
+            ← All memories
+          </Link>
+          {canEdit ? (
+            <Link
+              href={`/memories/${memory.id}/edit`}
+              className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-brand-red)] hover:opacity-70"
+            >
+              Edit
+              {memory.status === "draft" ? " (draft)" : ""}
+            </Link>
+          ) : null}
+        </div>
         <p className="mt-6 font-mono text-xs uppercase tracking-widest text-[color:var(--color-body)]">
           {memory.era ?? ""}
         </p>
