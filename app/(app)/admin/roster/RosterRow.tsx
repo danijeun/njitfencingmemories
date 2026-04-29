@@ -78,7 +78,7 @@ export function RosterRow({ row }: { row: Row }) {
             </Button>
           </div>
           {error && (
-            <p className="lg:col-span-6 text-sm text-red-600" role="alert">
+            <p className="lg:col-span-6 text-sm text-[color:var(--color-oxblood)]" role="alert">
               {error}
             </p>
           )}
@@ -114,7 +114,7 @@ export function RosterRow({ row }: { row: Row }) {
         </Button>
       </div>
       {error && (
-        <p className="w-full text-sm text-red-600" role="alert">
+        <p className="w-full text-sm text-[color:var(--color-oxblood)]" role="alert">
           {error}
         </p>
       )}

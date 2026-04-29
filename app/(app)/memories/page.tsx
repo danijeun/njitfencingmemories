@@ -7,12 +7,16 @@ export const dynamic = "force-dynamic";
 
 export default async function MemoriesPage() {
   const supabase = await createClient();
-  const { data: memories } = await supabase
-    .from("memories")
-    .select("id, title, excerpt, cover_path, era, published_at, author_id")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(40);
+  const [{ data: memories }, userResult] = await Promise.all([
+    supabase
+      .from("memories")
+      .select("id, title, excerpt, cover_path, era, published_at, author_id")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(40),
+    supabase.auth.getUser(),
+  ]);
+  const isAuthed = Boolean(userResult.data.user);
 
   return (
     <main className="flex-1 px-4 py-10 sm:px-6 lg:px-10">
@@ -40,7 +44,7 @@ export default async function MemoriesPage() {
           </p>
         ) : null}
       </section>
-      <MemoryFab />
+      {isAuthed ? <MemoryFab /> : null}
     </main>
   );
 }

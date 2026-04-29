@@ -1,29 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { BookOpen, PenLine, User, LogIn, Search } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 type Item = {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   keywords?: string[];
+  auth: "in" | "out" | "any";
 };
 
 const ITEMS: Item[] = [
-  { label: "Memories feed", href: "/memories", icon: BookOpen, keywords: ["archive", "stories"] },
-  { label: "New memory", href: "/memories/new", icon: PenLine, keywords: ["write", "create"] },
-  { label: "My profile", href: "/profile/me", icon: User, keywords: ["account"] },
-  { label: "Edit profile", href: "/profile/edit", icon: User, keywords: ["settings"] },
-  { label: "Log in", href: "/login", icon: LogIn },
+  {
+    label: "Memories feed",
+    href: "/memories",
+    icon: BookOpen,
+    keywords: ["archive", "stories"],
+    auth: "any",
+  },
+  {
+    label: "New memory",
+    href: "/memories/new",
+    icon: PenLine,
+    keywords: ["write", "create"],
+    auth: "in",
+  },
+  { label: "My profile", href: "/profile/me", icon: User, keywords: ["account"], auth: "in" },
+  { label: "Edit profile", href: "/profile/edit", icon: User, keywords: ["settings"], auth: "in" },
+  { label: "Log in", href: "/login", icon: LogIn, auth: "out" },
 ];
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+    let active = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setIsAuthed(Boolean(data.user));
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthed(Boolean(session?.user));
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+
+  const items = useMemo(
+    () =>
+      ITEMS.filter((it) =>
+        it.auth === "any" ? true : isAuthed ? it.auth === "in" : it.auth === "out",
+      ),
+    [isAuthed],
+  );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -69,7 +107,7 @@ export function CommandPalette() {
                 heading="Navigate"
                 className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-[color:var(--color-ink)]/60"
               >
-                {ITEMS.map(({ label, href, icon: Icon, keywords }) => (
+                {items.map(({ label, href, icon: Icon, keywords }) => (
                   <Command.Item
                     key={href}
                     value={`${label} ${(keywords ?? []).join(" ")}`}

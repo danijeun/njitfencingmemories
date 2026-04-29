@@ -2,6 +2,7 @@
 
 import { m, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 type MemorySummary = {
   id: string;
@@ -11,6 +12,10 @@ type MemorySummary = {
   era: number | null;
   published_at: string | null;
 };
+
+function coverUrl(path: string) {
+  return createClient().storage.from("memory-covers").getPublicUrl(path).data.publicUrl;
+}
 
 export function MemoryCard({ memory, index = 0 }: { memory: MemorySummary; index?: number }) {
   const reduce = useReducedMotion();
@@ -25,7 +30,15 @@ export function MemoryCard({ memory, index = 0 }: { memory: MemorySummary; index
       )}
     >
       {memory.cover_path ? (
-        <div className="mb-4 aspect-[4/3] overflow-hidden rounded bg-[color:var(--color-rule)] @md:aspect-[3/2]" />
+        <div className="mb-4 aspect-[4/3] overflow-hidden rounded bg-[color:var(--color-rule)] @md:aspect-[3/2]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={coverUrl(memory.cover_path)}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+        </div>
       ) : null}
 
       <div className="flex items-baseline justify-between gap-3 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-body)]">

@@ -54,7 +54,7 @@ export async function TopNav() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
+                  className="rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] transition-colors hover:text-[color:var(--color-oxblood)]"
                 >
                   {l.label}
                 </Link>
@@ -73,7 +73,7 @@ export async function TopNav() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="hidden rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70 md:inline"
+                className="hidden rounded px-2 py-1 font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] transition-colors hover:text-[color:var(--color-oxblood)] md:inline"
               >
                 {l.label}
               </Link>
@@ -84,6 +84,7 @@ export async function TopNav() {
           </div>
         )}
       </nav>
+      <div aria-hidden className="njit-tartan-rule" />
     </header>
   );
 }

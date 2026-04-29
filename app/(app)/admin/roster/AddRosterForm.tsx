@@ -54,7 +54,7 @@ export function AddRosterForm() {
 
       <div className="sm:col-span-2 lg:col-span-5 flex items-center justify-between gap-3">
         {error ? (
-          <p className="text-sm text-red-600" role="alert">
+          <p className="text-sm text-[color:var(--color-oxblood)]" role="alert">
             {error}
           </p>
         ) : (

@@ -15,15 +15,16 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
 
   if (!memory) notFound();
 
-  let author: { full_name: string; slug: string } | null = null;
+  let author: { full_name: string; slug: string | null } | null = null;
   if (memory.author_id) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("full_name, slug")
-      .eq("id", memory.author_id)
-      .maybeSingle();
-    author = data ?? null;
+    const { data } = await supabase.rpc("get_public_profile", { p_id: memory.author_id });
+    const row = (data as { full_name: string; slug: string | null }[] | null)?.[0];
+    author = row ? { full_name: row.full_name, slug: row.slug } : null;
   }
+
+  const coverUrl = memory.cover_path
+    ? supabase.storage.from("memory-covers").getPublicUrl(memory.cover_path).data.publicUrl
+    : null;
 
   return (
     <main className="flex-1 px-4 py-10 sm:px-6 lg:px-10">
@@ -43,15 +44,24 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
         {author ? (
           <p className="mt-3 text-sm text-[color:var(--color-body)]">
             By{" "}
-            <Link href={`/profile/${author.slug}`} className="underline hover:opacity-70">
-              {author.full_name}
-            </Link>
+            {author.slug ? (
+              <Link href={`/profile/${author.slug}`} className="underline hover:opacity-70">
+                {author.full_name}
+              </Link>
+            ) : (
+              author.full_name
+            )}
           </p>
+        ) : null}
+        {coverUrl ? (
+          <div className="mt-8 overflow-hidden rounded-lg border border-[color:var(--color-rule)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={coverUrl} alt="" className="h-auto w-full object-cover" />
+          </div>
         ) : null}
         {memory.excerpt ? (
           <p className="mt-6 text-lg leading-8 text-[color:var(--color-body)]">{memory.excerpt}</p>
         ) : null}
-        {/* Body renderer + comments/reactions land in Sprint 4. */}
       </article>
     </main>
   );

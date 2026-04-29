@@ -41,7 +41,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
             <input type="hidden" name="from" value={from} />
             <button
               type="submit"
-              className="mt-2 rounded bg-[color:var(--color-ink)] px-4 py-3 text-base font-medium text-[color:var(--color-ivory)]"
+              className="mt-2 rounded bg-[color:var(--color-oxblood)] px-4 py-3 text-base font-medium text-[color:var(--color-brand-white)] transition hover:opacity-90"
             >
               Send magic link
             </button>
