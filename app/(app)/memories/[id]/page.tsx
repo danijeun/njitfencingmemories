@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { MemoryBody } from "@/components/memory/MemoryBody";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +71,9 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
         {memory.excerpt ? (
           <p className="mt-6 text-lg leading-8 text-[color:var(--color-body)]">{memory.excerpt}</p>
         ) : null}
+        <div className="mt-8 text-base">
+          <MemoryBody body={memory.body} />
+        </div>
       </article>
     </main>
   );
