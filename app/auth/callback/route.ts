@@ -37,11 +37,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login?error=no_user`);
   }
 
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("onboarded_at")
     .eq("id", user.id)
     .maybeSingle();
+
+  if (!profile) {
+    await supabase.rpc("ensure_profile_for_current_user");
+    ({ data: profile } = await supabase
+      .from("profiles")
+      .select("onboarded_at")
+      .eq("id", user.id)
+      .maybeSingle());
+  }
 
   if (!profile) {
     await supabase.auth.signOut();

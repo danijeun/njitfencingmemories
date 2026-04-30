@@ -1,13 +1,15 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { Link } from "next-view-transitions";
 import { MemoryFab } from "@/components/memory/MemoryFab";
 import { FilterSheet } from "@/components/memory/FilterSheet";
 import { FeedFiltersPanel, FeedTabs } from "@/components/memory/FeedFilters";
-import { FeedList } from "@/components/memory/FeedList";
 import { FeedRightRail } from "@/components/memory/FeedRightRail";
 import { InlineComposer } from "@/components/memory/InlineComposer";
+import { FeedListSkeleton } from "@/components/skeletons/FeedListSkeleton";
 import { signedAvatarUrls } from "@/lib/storage/avatars";
-import { fetchFeedPage, type FeedFilters, type FeedRole, type FeedSort } from "./feed";
+import { type FeedFilters, type FeedRole, type FeedSort } from "./feed";
+import { FeedSection } from "./FeedSection";
 import type { EraCount } from "@/components/memory/TimelineRail";
 
 export const dynamic = "force-dynamic";
@@ -47,29 +49,28 @@ export default async function MemoriesPage({
   };
 
   const supabase = await createClient();
-  const [{ data: eraRows }, userResult, firstPage] = await Promise.all([
-    supabase.rpc("memory_era_counts"),
-    supabase.auth.getUser(),
-    fetchFeedPage(filters, null),
-  ]);
-  const eras = (eraRows ?? []) as EraCount[];
+  const userResult = await supabase.auth.getUser();
   const user = userResult.data.user;
   const isAuthed = Boolean(user);
 
-  let composerAvatar: string | null = null;
-  let composerName: string | null = null;
-  if (user) {
-    const { data: me } = await supabase
-      .from("profiles")
-      .select("full_name, avatar_path")
-      .eq("id", user.id)
-      .maybeSingle();
-    composerName = me?.full_name ?? null;
-    if (me?.avatar_path) {
-      const map = await signedAvatarUrls(supabase, [me.avatar_path]);
-      composerAvatar = map.get(me.avatar_path) ?? null;
-    }
-  }
+  const [{ data: eraRows }, composerProfile] = await Promise.all([
+    supabase.rpc("memory_era_counts"),
+    user
+      ? supabase
+          .from("profiles")
+          .select("full_name, avatar_path")
+          .eq("id", user.id)
+          .maybeSingle()
+          .then((r) => r.data)
+      : Promise.resolve(null),
+  ]);
+  const eras = (eraRows ?? []) as EraCount[];
+  const composerName = composerProfile?.full_name ?? null;
+  const composerAvatar = composerProfile?.avatar_path
+    ? ((await signedAvatarUrls(supabase, [composerProfile.avatar_path])).get(
+        composerProfile.avatar_path,
+      ) ?? null)
+    : null;
 
   return (
     <main className="flex-1">
@@ -138,11 +139,12 @@ export default async function MemoriesPage({
 
           {isAuthed ? <InlineComposer avatarUrl={composerAvatar} name={composerName} /> : null}
 
-          <FeedList
-            initialItems={firstPage.items}
-            initialCursor={firstPage.nextCursor}
-            filters={filters}
-          />
+          <Suspense
+            key={`${filters.sort}|${filters.roles.join(",")}|${filters.eras.join(",")}`}
+            fallback={<FeedListSkeleton count={5} />}
+          >
+            <FeedSection filters={filters} />
+          </Suspense>
         </section>
 
         {/* Right rail (desktop) */}

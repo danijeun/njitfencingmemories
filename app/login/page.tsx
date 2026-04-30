@@ -66,36 +66,36 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
               <span className="h-px flex-1 bg-[color:var(--color-ink)]/15" />
             </div>
 
-          <form action={sendMagicLink} className="mt-6 flex flex-col gap-3">
-            <label className="text-sm" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              className="rounded border border-[color:var(--color-ink)]/30 bg-[color:var(--color-paper)] px-3 py-2 text-base"
-            />
-            <input type="hidden" name="from" value={from} />
-            <button
-              type="submit"
-              className="mt-2 rounded border border-[color:var(--color-ink)]/30 bg-[color:var(--color-paper)] px-4 py-3 text-base font-medium text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-ink)]/5"
-            >
-              Send magic link
-            </button>
-            {error === "invalid_email" && (
-              <p className="text-sm text-[color:var(--color-oxblood)]">
-                That doesn&apos;t look like a valid email.
-              </p>
-            )}
-            {error === "send_failed" && (
-              <p className="text-sm text-[color:var(--color-oxblood)]">
-                Could not send the link. Try again in a minute.
-              </p>
-            )}
-          </form>
+            <form action={sendMagicLink} className="mt-6 flex flex-col gap-3">
+              <label className="text-sm" htmlFor="email">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="rounded border border-[color:var(--color-ink)]/30 bg-[color:var(--color-paper)] px-3 py-2 text-base"
+              />
+              <input type="hidden" name="from" value={from} />
+              <button
+                type="submit"
+                className="mt-2 rounded border border-[color:var(--color-ink)]/30 bg-[color:var(--color-paper)] px-4 py-3 text-base font-medium text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-ink)]/5"
+              >
+                Send magic link
+              </button>
+              {error === "invalid_email" && (
+                <p className="text-sm text-[color:var(--color-oxblood)]">
+                  That doesn&apos;t look like a valid email.
+                </p>
+              )}
+              {error === "send_failed" && (
+                <p className="text-sm text-[color:var(--color-oxblood)]">
+                  Could not send the link. Try again in a minute.
+                </p>
+              )}
+            </form>
           </>
         )}
       </div>

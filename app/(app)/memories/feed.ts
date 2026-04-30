@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { signedAvatarUrls } from "@/lib/storage/avatars";
+import { coverUrl } from "@/lib/storage/publicUrl";
 
 export type FeedSort = "newest" | "oldest";
 export type FeedRole = "athlete" | "alumni" | "coach";
@@ -77,9 +78,7 @@ export async function fetchFeedPage(filters: FeedFilters, cursor: FeedCursor): P
     cover_path: r.cover_path,
     era: r.era,
     published_at: r.published_at,
-    cover_url: r.cover_path
-      ? supabase.storage.from("memory-covers").getPublicUrl(r.cover_path).data.publicUrl
-      : null,
+    cover_url: r.cover_path ? coverUrl(r.cover_path) : null,
     author: {
       id: r.author_id,
       full_name: r.author_full_name,

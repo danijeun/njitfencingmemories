@@ -41,17 +41,19 @@ function initials(name: string | null): string {
     .join("");
 }
 
-export function FeedCard({ memory }: { memory: FeedItem }) {
+export function FeedCard({ memory, priority = false }: { memory: FeedItem; priority?: boolean }) {
   const { author } = memory;
   const profileHref = author.slug ? `/profile/${author.slug}` : null;
   const stop = (e: React.MouseEvent) => e.stopPropagation();
 
   return (
-    <Link
-      href={`/memories/${memory.id}`}
-      className="@container block border-b border-[color:var(--color-rule)] px-4 py-5 transition-colors hover:bg-[color:var(--color-paper)] focus-visible:bg-[color:var(--color-paper)] sm:px-6"
-    >
-      <article className="flex gap-3 sm:gap-4">
+    <div className="@container relative border-b border-[color:var(--color-rule)] px-4 py-5 transition-colors hover:bg-[color:var(--color-paper)] focus-within:bg-[color:var(--color-paper)] sm:px-6">
+      <Link
+        href={`/memories/${memory.id}`}
+        aria-label={memory.title}
+        className="absolute inset-0 focus-visible:outline-none"
+      />
+      <article className="pointer-events-none flex gap-3 sm:gap-4">
         {/* Avatar */}
         <div className="shrink-0">
           {author.avatar_url ? (
@@ -79,7 +81,7 @@ export function FeedCard({ memory }: { memory: FeedItem }) {
               <Link
                 href={profileHref}
                 onClick={stop}
-                className="font-semibold text-[color:var(--color-ink)] hover:underline"
+                className="pointer-events-auto relative font-semibold text-[color:var(--color-ink)] hover:underline"
               >
                 {author.full_name ?? "Unknown"}
               </Link>
@@ -133,6 +135,8 @@ export function FeedCard({ memory }: { memory: FeedItem }) {
                 fill
                 sizes="(min-width: 64rem) 600px, 100vw"
                 className="object-cover"
+                priority={priority}
+                fetchPriority={priority ? "high" : "auto"}
               />
             </div>
           ) : null}
@@ -144,7 +148,7 @@ export function FeedCard({ memory }: { memory: FeedItem }) {
               onClick={stop}
               disabled
               aria-label="Comments (coming soon)"
-              className="flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="pointer-events-auto relative flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <MessageCircle className="size-4" aria-hidden />
               <span className="tabular-nums">0</span>
@@ -154,7 +158,7 @@ export function FeedCard({ memory }: { memory: FeedItem }) {
               onClick={stop}
               disabled
               aria-label="React (coming soon)"
-              className="flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="pointer-events-auto relative flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Heart className="size-4" aria-hidden />
               <span className="tabular-nums">0</span>
@@ -164,7 +168,7 @@ export function FeedCard({ memory }: { memory: FeedItem }) {
               onClick={stop}
               disabled
               aria-label="Share (coming soon)"
-              className="flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="pointer-events-auto relative flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Share2 className="size-4" aria-hidden />
             </button>
@@ -174,6 +178,6 @@ export function FeedCard({ memory }: { memory: FeedItem }) {
           </div>
         </div>
       </article>
-    </Link>
+    </div>
   );
 }

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { EditProfileForm } from "./EditProfileForm";
+import { FormSkeleton } from "@/components/skeletons/FormSkeleton";
 
 export default async function EditProfilePage() {
   const supabase = await createClient();
@@ -25,7 +26,7 @@ export default async function EditProfilePage() {
         <h1 className="mt-3 font-display text-fluid-2xl text-[color:var(--color-ink)]">
           Edit profile
         </h1>
-        <Suspense>
+        <Suspense fallback={<FormSkeleton rows={4} />}>
           <EditProfileForm
             defaults={{
               full_name: profile?.full_name ?? "",

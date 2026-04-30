@@ -30,10 +30,15 @@ export async function TopNav() {
   const links = user
     ? [
         { href: "/memories", label: "Memories" },
+        { href: "/gallery", label: "Gallery" },
+        { href: "/alumni", label: "Alumni" },
         { href: profileHref, label: "Profile" },
         ...(isAdmin ? [{ href: "/admin/roster", label: "Admin" }] : []),
       ]
-    : [{ href: "/memories", label: "Memories" }];
+    : [
+        { href: "/memories", label: "Memories" },
+        { href: "/gallery", label: "Gallery" },
+      ];
 
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--color-ink)]/10 bg-[color:var(--color-paper)]/85 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--color-paper)]/70 pt-safe">

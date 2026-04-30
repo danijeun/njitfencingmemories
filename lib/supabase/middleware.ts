@@ -3,9 +3,23 @@ import { NextResponse, type NextRequest } from "next/server";
 
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
-const PUBLIC_PATHS = ["/", "/login", "/auth/callback", "/not-on-roster"];
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/auth/callback",
+  "/not-on-roster",
+  "/memories",
+  "/search",
+  "/gallery",
+];
+
+// Routes under a public prefix that still require auth.
+const GATED_EXCEPTIONS = ["/memories/new"];
 
 function isPublic(pathname: string) {
+  if (GATED_EXCEPTIONS.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+    return false;
+  }
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
 

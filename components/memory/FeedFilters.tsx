@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useTransition } from "react";
 import { cn } from "@/lib/utils";
+import { emitNavStart } from "@/components/nav/nav-progress-bus";
 import type { EraCount } from "./TimelineRail";
 import type { FeedRole, FeedSort } from "@/app/(app)/memories/feed";
 
@@ -22,6 +23,7 @@ export function useFeedFilterState() {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
+  const [, startTransition] = useTransition();
 
   const sort = (sp.get("sort") === "oldest" ? "oldest" : "newest") as FeedSort;
   const roles = readArray(sp, "roles") as FeedRole[];
@@ -29,18 +31,29 @@ export function useFeedFilterState() {
     .map((s) => Number(s))
     .filter((n) => Number.isInteger(n));
 
-  const setParam = useCallback(
-    (key: string, value: string | null) => {
+  const setParams = useCallback(
+    (updates: Record<string, string | null>) => {
       const next = new URLSearchParams(sp);
-      if (!value) next.delete(key);
-      else next.set(key, value);
+      for (const [key, value] of Object.entries(updates)) {
+        if (!value) next.delete(key);
+        else next.set(key, value);
+      }
       const qs = next.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      const url = qs ? `${pathname}?${qs}` : pathname;
+      emitNavStart();
+      startTransition(() => {
+        router.replace(url, { scroll: false });
+      });
     },
     [pathname, router, sp],
   );
 
-  return { sort, roles, eras, setParam };
+  const setParam = useCallback(
+    (key: string, value: string | null) => setParams({ [key]: value }),
+    [setParams],
+  );
+
+  return { sort, roles, eras, setParam, setParams };
 }
 
 export function FeedTabs() {
@@ -77,7 +90,7 @@ export function FeedTabs() {
 }
 
 export function FeedFiltersPanel({ eras }: { eras: EraCount[] }) {
-  const { sort, roles, eras: activeEras, setParam } = useFeedFilterState();
+  const { sort, roles, eras: activeEras, setParam, setParams } = useFeedFilterState();
 
   const decadeGroups = useMemo(() => {
     const map = new Map<number, EraCount[]>();
@@ -195,11 +208,7 @@ export function FeedFiltersPanel({ eras }: { eras: EraCount[] }) {
       {anyActive ? (
         <button
           type="button"
-          onClick={() => {
-            setParam("sort", null);
-            setParam("roles", null);
-            setParam("eras", null);
-          }}
+          onClick={() => setParams({ sort: null, roles: null, eras: null })}
           className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-brand-red)] underline underline-offset-4"
         >
           Clear all

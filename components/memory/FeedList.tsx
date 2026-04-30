@@ -82,8 +82,8 @@ export function FeedList({
 
   return (
     <div>
-      {items.map((m) => (
-        <FeedCard key={m.id} memory={m} />
+      {items.map((m, i) => (
+        <FeedCard key={m.id} memory={m} priority={i < 2} />
       ))}
 
       {cursor ? (

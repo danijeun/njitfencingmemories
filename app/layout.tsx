@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
+import { Suspense } from "react";
 import { Providers } from "@/components/providers";
+import { NavProgress } from "@/components/nav/NavProgress";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -44,7 +46,18 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         suppressHydrationWarning
         className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
       >
+        <head>
+          {process.env.NEXT_PUBLIC_SUPABASE_URL ? (
+            <>
+              <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} crossOrigin="" />
+              <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+            </>
+          ) : null}
+        </head>
         <body className="flex min-h-svh flex-col">
+          <Suspense fallback={null}>
+            <NavProgress />
+          </Suspense>
           <Providers>{children}</Providers>
         </body>
       </html>

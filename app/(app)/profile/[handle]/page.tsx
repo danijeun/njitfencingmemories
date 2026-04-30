@@ -21,10 +21,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
 
   let avatarUrl: string | null = null;
   if (profile.avatar_path) {
-    const { data } = await supabase.storage
-      .from("avatars")
-      .createSignedUrl(profile.avatar_path, 60 * 60);
-    avatarUrl = data?.signedUrl ?? null;
+    const { data } = supabase.storage.from("avatars").getPublicUrl(profile.avatar_path);
+    avatarUrl = data?.publicUrl ?? null;
   }
 
   const isMe = user?.id === profile.id;
