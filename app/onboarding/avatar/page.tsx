@@ -1,5 +1,6 @@
 import { Stepper } from "../Stepper";
 import { saveAvatar } from "../actions";
+import { AvatarUploadField } from "@/components/profile/AvatarUploadField";
 
 export default function OnboardingAvatar() {
   return (
@@ -10,7 +11,7 @@ export default function OnboardingAvatar() {
       </h1>
       <p className="mt-2 text-[color:var(--color-body)]">JPG or PNG, 5MB max.</p>
       <form action={saveAvatar} className="mt-8 flex flex-col gap-3">
-        <input id="avatar" name="avatar" type="file" accept="image/*" className="text-sm" />
+        <AvatarUploadField />
         <button
           type="submit"
           className="mt-2 rounded bg-[color:var(--color-ink)] px-4 py-3 text-base font-medium text-[color:var(--color-ivory)]"

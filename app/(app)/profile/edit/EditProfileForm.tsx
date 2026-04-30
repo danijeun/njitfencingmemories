@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { AvatarUploadField } from "@/components/profile/AvatarUploadField";
 import { saveProfile } from "./actions";
 
 const schema = z.object({
@@ -90,7 +91,7 @@ export function EditProfileForm({ defaults }: { defaults: Partial<FormValues> })
       </Field>
 
       <Field label="Replace avatar">
-        <Input id="avatar" name="avatar" type="file" accept="image/*" className="h-auto py-2" />
+        <AvatarUploadField />
       </Field>
 
       <Button type="submit" size="lg" disabled={pending} className="mt-2 self-start">
