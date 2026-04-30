@@ -10,31 +10,29 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { TimelineRail, type EraCount } from "./TimelineRail";
+import { type EraCount } from "./TimelineRail";
+import { FeedFiltersPanel, useFeedFilterState } from "./FeedFilters";
 
-export function FilterSheet({ eras, active }: { eras: EraCount[]; active: number | null }) {
+export function FilterSheet({ eras }: { eras: EraCount[] }) {
   const [open, setOpen] = useState(false);
-  const label = active !== null ? `Era · ${active}` : "Filter";
+  const { sort, roles, eras: activeEras } = useFeedFilterState();
+  const activeCount = (sort !== "newest" ? 1 : 0) + roles.length + activeEras.length;
+  const label = activeCount > 0 ? `Filters · ${activeCount}` : "Filter";
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="ghost" size="sm" className="md:hidden">
+        <Button variant="ghost" size="sm" className="lg:hidden">
           <Filter className="size-4" aria-hidden />
           <span className="ml-2 font-mono text-xs uppercase tracking-widest">{label}</span>
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Filter by era</DrawerTitle>
+          <DrawerTitle>Filter memories</DrawerTitle>
         </DrawerHeader>
-        <div
-          className="px-5 pb-6"
-          onClickCapture={(e) => {
-            if ((e.target as HTMLElement).closest("a")) setOpen(false);
-          }}
-        >
-          <TimelineRail eras={eras} active={active} orientation="vertical" />
+        <div className="max-h-[70dvh] overflow-y-auto px-5 pb-8">
+          <FeedFiltersPanel eras={eras} />
         </div>
       </DrawerContent>
     </Drawer>
