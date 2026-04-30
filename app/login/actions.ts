@@ -38,6 +38,27 @@ export async function sendMagicLink(formData: FormData) {
   redirect(`/login?sent=1&from=${encodeURIComponent(from)}`);
 }
 
+export async function signInWithGoogle(formData: FormData) {
+  const from = String(formData.get("from") ?? "/profile/me");
+  const supabase = await createClient();
+  const h = await headers();
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? h.get("origin") ?? `https://${h.get("host")}`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback?from=${encodeURIComponent(from)}`,
+      queryParams: { access_type: "offline", prompt: "select_account" },
+    },
+  });
+
+  if (error || !data?.url) {
+    redirect(`/login?error=oauth_failed&from=${encodeURIComponent(from)}`);
+  }
+
+  redirect(data.url);
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
