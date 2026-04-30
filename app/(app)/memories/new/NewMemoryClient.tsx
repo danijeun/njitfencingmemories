@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CoverPicker } from "@/components/memory/CoverPicker";
 import { createMemory } from "./actions";
 
 const MemoryEditor = dynamic(
@@ -22,6 +23,7 @@ export function NewMemoryClient() {
   const [excerpt, setExcerpt] = useState("");
   const [era, setEra] = useState<string>("");
   const [body, setBody] = useState<object>({ type: "doc", content: [{ type: "paragraph" }] });
+  const [coverPath, setCoverPath] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const submit = (publish: boolean) => {
@@ -35,6 +37,7 @@ export function NewMemoryClient() {
         excerpt,
         era: era ? Number(era) : null,
         body,
+        cover_path: coverPath,
         publish,
       });
       if (!res.ok) {
@@ -84,6 +87,11 @@ export function NewMemoryClient() {
             placeholder="2008"
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label>Cover image</Label>
+        <CoverPicker value={coverPath} onChange={setCoverPath} />
       </div>
 
       <div className="flex flex-col gap-2">

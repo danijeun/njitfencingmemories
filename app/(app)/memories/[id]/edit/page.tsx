@@ -14,7 +14,7 @@ export default async function EditMemoryPage({ params }: { params: Promise<{ id:
 
   const { data: memory } = await supabase
     .from("memories")
-    .select("id, title, excerpt, body, era, status, author_id")
+    .select("id, title, excerpt, body, cover_path, era, status, author_id")
     .eq("id", id)
     .maybeSingle();
 
@@ -38,6 +38,7 @@ export default async function EditMemoryPage({ params }: { params: Promise<{ id:
               excerpt: memory.excerpt ?? "",
               era: memory.era,
               body: memory.body,
+              cover_path: memory.cover_path,
               status: memory.status,
             }}
           />

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CoverPicker } from "@/components/memory/CoverPicker";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +34,7 @@ export type EditMemoryInitial = {
   excerpt: string;
   era: number | null;
   body: object | null;
+  cover_path: string | null;
   status: "draft" | "published";
 };
 
@@ -46,6 +48,7 @@ export function EditMemoryClient({ initial }: { initial: EditMemoryInitial }) {
       ? initial.body
       : { type: "doc", content: [{ type: "paragraph" }] },
   );
+  const [coverPath, setCoverPath] = useState<string | null>(initial.cover_path ?? null);
   const [pending, startTransition] = useTransition();
   const [deleting, startDelete] = useTransition();
 
@@ -60,6 +63,7 @@ export function EditMemoryClient({ initial }: { initial: EditMemoryInitial }) {
         excerpt,
         era: era ? Number(era) : null,
         body,
+        cover_path: coverPath,
         publish,
       });
       if (!res.ok) {
@@ -123,6 +127,11 @@ export function EditMemoryClient({ initial }: { initial: EditMemoryInitial }) {
             placeholder="2008"
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label>Cover image</Label>
+        <CoverPicker value={coverPath} onChange={setCoverPath} />
       </div>
 
       <div className="flex flex-col gap-2">

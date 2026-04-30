@@ -133,12 +133,18 @@ function renderNode(node: TiptapNode, key: string): React.ReactNode {
       const src = node.attrs?.src as string | undefined;
       if (!src) return null;
       const alt = (node.attrs?.alt as string) ?? "";
+      const w = typeof node.attrs?.width === "number" ? node.attrs.width : undefined;
+      const h = typeof node.attrs?.height === "number" ? node.attrs.height : undefined;
       return (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           key={key}
           src={src}
           alt={alt}
+          width={w}
+          height={h}
+          loading="lazy"
+          decoding="async"
           className="my-6 h-auto w-full rounded-lg border border-[color:var(--color-rule)]"
         />
       );
