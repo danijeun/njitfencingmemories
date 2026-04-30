@@ -16,13 +16,16 @@ export async function sendMagicLink(formData: FormData) {
 
   const supabase = await createClient();
 
-  // Pre-check the roster so we don't email people who can't sign in.
-  // Note: the roster table is locked via RLS to anon/authenticated, so this
-  // check uses a SECURITY DEFINER RPC. For now we just attempt the OTP send
-  // and gate access at /auth/callback — keeps the migration small.
-
   const h = await headers();
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? h.get("origin") ?? `https://${h.get("host")}`;
+
+  const { data: onRoster } = await supabase.rpc("is_email_on_roster", { p_email: email });
+
+  if (!onRoster) {
+    // Don't reveal roster membership. Show the same "sent" confirmation
+    // and skip the actual email send.
+    redirect(`/login?sent=1&from=${encodeURIComponent(from)}`);
+  }
 
   const { error } = await supabase.auth.signInWithOtp({
     email,
