@@ -15,17 +15,17 @@ export default function NotOnRosterPage() {
           limited to current NJIT fencing athletes, alumni, and coaches.
         </p>
         <p className="mt-4 text-[color:var(--color-body)]">
-          If you should be on the roster, email{" "}
-          <a
-            href="mailto:danijeun@gmail.com?subject=NJIT%20Fencing%20roster%20request"
-            className="underline decoration-[color:var(--color-brand-red)] underline-offset-4"
-          >
-            danijeun@gmail.com
-          </a>{" "}
-          to be added. If you signed in with the wrong email (for example a personal Google
-          account), try again with the address the captain has on file.
+          If you should be on the roster, request access below and an admin will review. If you
+          signed in with the wrong email (for example a personal Google account), try again with the
+          address the captain has on file.
         </p>
-        <div className="mt-8 flex gap-3">
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/request-access"
+            className="inline-block rounded border border-[color:var(--color-brand-red)] bg-[color:var(--color-brand-red)] px-4 py-2 text-[color:var(--color-brand-white)]"
+          >
+            Request access
+          </Link>
           <Link
             href="/login"
             className="inline-block rounded border border-[color:var(--color-ink)]/30 px-4 py-2"

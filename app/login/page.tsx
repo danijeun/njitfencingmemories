@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { sendMagicLink, signInWithGoogle } from "./actions";
 
 type SearchParams = Promise<{ sent?: string; error?: string; from?: string }>;
@@ -96,6 +97,17 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
                 </p>
               )}
             </form>
+
+            <p className="mt-6 text-sm text-[color:var(--color-body)]">
+              Not on the roster yet?{" "}
+              <Link
+                href="/request-access"
+                className="underline decoration-[color:var(--color-brand-red)] underline-offset-4"
+              >
+                Request access
+              </Link>
+              .
+            </p>
           </>
         )}
       </div>

@@ -44,12 +44,20 @@ export default async function AdminAuditPage() {
           <h1 className="font-serif text-3xl text-[color:var(--color-ink)]">Roster audit</h1>
           <p className="mt-1 text-sm text-[color:var(--color-ink)]/70">Last 200 changes.</p>
         </div>
-        <Link
-          href="/admin/roster"
-          className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
-        >
-          ← Roster
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/admin/roster"
+            className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
+          >
+            ← Roster
+          </Link>
+          <Link
+            href="/admin/requests"
+            className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
+          >
+            Requests →
+          </Link>
+        </div>
       </div>
 
       <ul className="divide-y divide-[color:var(--color-rule)] rounded-md border border-[color:var(--color-rule)]">

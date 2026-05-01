@@ -36,12 +36,20 @@ export default async function AdminRosterPage() {
             People allowed to sign in and post memories.
           </p>
         </div>
-        <Link
-          href="/admin/audit"
-          className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
-        >
-          Audit log →
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/admin/requests"
+            className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
+          >
+            Requests →
+          </Link>
+          <Link
+            href="/admin/audit"
+            className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
+          >
+            Audit log →
+          </Link>
+        </div>
       </div>
 
       <section className="mb-10 rounded-md border border-[color:var(--color-rule)] p-4">

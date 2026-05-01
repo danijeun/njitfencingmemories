@@ -8,6 +8,7 @@ const PUBLIC_PATHS = [
   "/login",
   "/auth/callback",
   "/not-on-roster",
+  "/request-access",
   "/memories",
   "/search",
   "/gallery",
@@ -70,7 +71,7 @@ export async function updateSession(request: NextRequest) {
     .maybeSingle();
 
   if (!profile) {
-    if (pathname === "/not-on-roster") return response;
+    if (pathname === "/not-on-roster" || pathname.startsWith("/request-access")) return response;
     await supabase.auth.signOut();
     const url = request.nextUrl.clone();
     url.pathname = "/not-on-roster";
