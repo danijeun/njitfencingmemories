@@ -1,7 +1,0 @@
-.next
-node_modules
-pnpm-lock.yaml
-public
-supabase/.branches
-supabase/.temp
-*.txt
