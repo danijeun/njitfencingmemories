@@ -1,0 +1,163 @@
+================================================================================
+              ALUMNI MEMORIES ARCHIVE — PROJECT & STACK REPORT
+================================================================================
+                                                              April 2026
+
+
+1. PROJECT VISION
+--------------------------------------------------------------------------------
+
+The Alumni Memories Archive is a web platform where graduates can share, browse,
+and preserve memories from their time at an institution. It combines a blog
+engine for long-form stories with a photo gallery, class-year timelines, and an
+alumni directory — creating a living, community-driven archive that grows over
+time.
+
+The core insight: only about 19–20% of alumni actively engage with their alma
+mater. A purpose-built platform centered on nostalgia, storytelling, and easy
+contribution can significantly increase that number by making engagement feel
+personal rather than institutional.
+
+
+2. KEY FEATURES
+--------------------------------------------------------------------------------
+
+  Blog / Memories Submission
+    Rich text editor with photo uploads. Alumni write tagged posts (by year,
+    event, theme). Guided prompts lower the barrier to contribution.
+
+  Photo Gallery
+    Browsable, searchable image gallery. Alumni upload and tag photos with
+    names, events, and dates. Thumbnails auto-generated via Next.js image
+    optimization.
+
+  Class-Year Timelines
+    Visual timeline view filtered by graduation year or decade. Drives
+    nostalgia and cross-generational connection.
+
+  Alumni Directory & Profiles
+    Searchable directory with graduation year, location, and bio. Profiles
+    linked to Supabase Auth with OAuth and magic-link login.
+
+  Comments & Reactions
+    Real-time comments powered by Supabase Realtime subscriptions. Emoji
+    reactions for lightweight engagement.
+
+  Full-Text Search
+    PostgreSQL tsvector search across all posts, photos, and profiles. No
+    external search service required at launch.
+
+  Content Moderation
+    Row Level Security ensures alumni edit only their own content. Admin
+    approval workflows keep the archive trustworthy.
+
+
+3. TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+
+  Layer           Technology                  Role
+  --------------- --------------------------- -----------------------------------
+  Language        TypeScript                  Type safety across frontend & backend
+  Frontend        Next.js (App Router)        SSR, routing, image optimization
+  Styling         Tailwind CSS + shadcn/ui    Utility CSS; accessible components
+  Backend         Supabase                    PostgreSQL, Auth, Storage, Realtime
+  Auth            Supabase Auth               OAuth (Google), magic links, sessions
+  File Storage    Supabase Storage            Photo/media uploads with CDN delivery
+  Search          PostgreSQL tsvector         Built-in full-text search
+  Deployment      Vercel                      One-click deploy, CDN, CI/CD
+  Email           Resend                      Transactional emails, digests
+
+
+4. ARCHITECTURE OVERVIEW
+--------------------------------------------------------------------------------
+
+  ┌──────────────────────────────────────────────────────────┐
+  │  VERCEL  —  CDN, edge functions, automatic deploys       │
+  └────────────────────────────┬─────────────────────────────┘
+                               │
+  ┌────────────────────────────▼─────────────────────────────┐
+  │  NEXT.JS  —  Blog UI  |  Gallery  |  Timelines  |  Dir  │
+  │  (Server Components, Server Actions, Image Optimization) │
+  └────────────────────────────┬─────────────────────────────┘
+                               │
+  ┌────────────────────────────▼─────────────────────────────┐
+  │  SUPABASE  —  Auth  |  PostgreSQL  |  Storage  |  RT     │
+  │  (Row Level Security, realtime subscriptions, CDN files) │
+  └────────────────────────────┬─────────────────────────────┘
+                               │
+  ┌────────────────────────────▼─────────────────────────────┐
+  │  SECURITY  —  RLS policies  |  Admin moderation layer    │
+  └──────────────────────────────────────────────────────────┘
+
+Next.js handles all routing, UI, and server logic. Supabase provides the
+entire backend: managed PostgreSQL with RLS, authentication, object storage
+for photos, and real-time subscriptions for live comments. Vercel deploys
+the frontend globally with automatic CI/CD from GitHub.
+
+
+5. CORE DATABASE SCHEMA
+--------------------------------------------------------------------------------
+
+  profiles
+    id, name, grad_year, bio, avatar_url
+    → Alumni directory entries, linked to auth.users
+
+  posts
+    id, author_id, title, body, year, status, created_at
+    → Blog entries and memories with moderation status
+
+  photos
+    id, post_id, storage_path, caption, tags[]
+    → Uploaded images stored in Supabase Storage
+
+  comments
+    id, post_id, author_id, body, created_at
+    → Threaded comments on posts
+
+  tags
+    id, name, category
+    → Taxonomy for filtering (year, event, theme)
+
+
+6. COST ESTIMATE
+--------------------------------------------------------------------------------
+
+  Service         Free Tier                           Growth Tier
+  --------------- ----------------------------------- ----------------------
+  Vercel          Hobby plan ($0/mo)                  Pro $20/mo
+  Supabase        500 MB DB, 1 GB storage ($0/mo)     Pro $25/mo
+  Resend          100 emails/day ($0/mo)              $20/mo (50K emails)
+  Custom Domain   —                                   ~$12/year
+
+The entire platform can launch at $0/month. Costs scale gradually only when
+traffic and storage grow beyond the free tiers — typically after hundreds of
+active users.
+
+
+7. STRATEGIC PRIORITIES
+--------------------------------------------------------------------------------
+
+  1. Frictionless contribution UX
+     If posting a memory takes more than two minutes, most alumni won't finish.
+     A guided prompt with optional photo upload beats a blank editor.
+
+  2. Mobile-first design
+     Most alumni arrive via email or social media on their phone. Every flow
+     must work perfectly on a small screen.
+
+  3. SEO and shareability
+     Server-side rendering makes every post indexable. Auto-generated OpenGraph
+     images make shared links visually compelling on social media.
+
+  4. Seed content before launch
+     An empty archive has no draw. Pre-populate with 20–30 founding memories
+     and scanned yearbook photos to create initial critical mass.
+
+  5. Content moderation
+     Row Level Security ensures alumni can only edit their own content. Admin
+     approval workflows keep the archive trustworthy and on-brand.
+
+
+================================================================================
+              Alumni Memories Archive — Project Report  |  April 2026
+================================================================================

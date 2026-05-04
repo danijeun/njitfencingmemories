@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+:root {
+  /* NJIT Highlanders brand palette (source of truth) */
+  --color-brand-red: #d22630;
+  --color-brand-navy: #071d49;
+  --color-brand-gray: #c1c6c8;
+  --color-brand-white: #ffffff;
+
+  /* Semantic surface tokens — names preserved for existing call sites,
+     repointed to NJIT brand. New code should prefer the --color-* aliases below. */
+  --color-ivory: var(--color-brand-white); /* page background */
+  --color-paper: color-mix(in oklab, var(--color-brand-gray) 30%, white); /* muted surface */
+  --color-ink: var(--color-brand-navy); /* headings, primary text */
+  --color-body: color-mix(in oklab, var(--color-brand-navy) 88%, black); /* body copy */
+  --color-rule: var(--color-brand-gray); /* dividers, borders */
+  --color-oxblood: var(--color-brand-red); /* primary accent / focus / destructive */
+  --color-indigo: var(--color-brand-navy); /* legacy alias */
+  --color-moss: color-mix(
+    in oklab,
+    var(--color-brand-navy) 60%,
+    white
+  ); /* legacy alias → muted navy */
+
+  /* Semantic aliases (intent-named, prefer in new components) */
+  --color-bg: var(--color-brand-white);
+  --color-fg: var(--color-brand-navy);
+  --color-muted: color-mix(in oklab, var(--color-brand-navy) 60%, white);
+  --color-border: var(--color-brand-gray);
+  --color-primary: var(--color-brand-red);
+  --color-primary-fg: var(--color-brand-white);
+  --color-accent: var(--color-brand-navy);
+  --color-ring: color-mix(in oklab, var(--color-brand-red) 70%, var(--color-brand-navy));
+
+  --background: var(--color-bg);
+  --foreground: var(--color-body);
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* Dark mode: navy base, white fg, red bumped lighter for AA on navy.
+   Toggled via next-themes (class="dark" on <html>). */
+.dark {
+  --color-ivory: var(--color-brand-navy);
+  --color-paper: color-mix(in oklab, var(--color-brand-navy) 80%, white);
+  --color-ink: var(--color-brand-white);
+  --color-body: color-mix(in oklab, var(--color-brand-white) 92%, var(--color-brand-navy));
+  --color-rule: color-mix(in oklab, var(--color-brand-gray) 50%, var(--color-brand-navy));
+  --color-oxblood: color-mix(in oklab, var(--color-brand-red) 70%, white);
+  --color-moss: color-mix(in oklab, var(--color-brand-white) 70%, var(--color-brand-navy));
+
+  --color-bg: var(--color-brand-navy);
+  --color-fg: var(--color-brand-white);
+  --color-muted: color-mix(in oklab, var(--color-brand-white) 70%, var(--color-brand-navy));
+  --color-border: color-mix(in oklab, var(--color-brand-gray) 50%, var(--color-brand-navy));
+  --color-primary: color-mix(in oklab, var(--color-brand-red) 70%, white);
+  --color-primary-fg: var(--color-brand-navy);
+  --color-accent: var(--color-brand-white);
+  --color-ring: color-mix(in oklab, var(--color-brand-red) 70%, white);
+
+  --background: var(--color-bg);
+  --foreground: var(--color-fg);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-paper: var(--color-paper);
+  --color-ink: var(--color-ink);
+  --color-indigo: var(--color-indigo);
+  --color-oxblood: var(--color-oxblood);
+  --color-moss: var(--color-moss);
+  --color-rule: var(--color-rule);
+
+  --color-brand-red: var(--color-brand-red);
+  --color-brand-navy: var(--color-brand-navy);
+  --color-brand-gray: var(--color-brand-gray);
+  --color-brand-white: var(--color-brand-white);
+
+  --color-bg: var(--color-bg);
+  --color-fg: var(--color-fg);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-primary: var(--color-primary);
+  --color-primary-fg: var(--color-primary-fg);
+  --color-accent: var(--color-accent);
+  --color-ring: var(--color-ring);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter-tight);
+  --font-mono: var(--font-jetbrains-mono);
+
+  --breakpoint-xs: 22.5rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  --text-fluid-sm: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+  --text-fluid-base: clamp(1rem, 0.95rem + 0.4vw, 1.125rem);
+  --text-fluid-lg: clamp(1.125rem, 1rem + 0.7vw, 1.375rem);
+  --text-fluid-xl: clamp(1.375rem, 1.15rem + 1.1vw, 1.875rem);
+  --text-fluid-2xl: clamp(1.75rem, 1.4rem + 1.8vw, 2.75rem);
+  --text-fluid-display: clamp(2.25rem, 1.6rem + 3.2vw, 4.5rem);
+}
+
+@layer utilities {
+  .h-dvh {
+    height: 100dvh;
+  }
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+  .h-svh {
+    height: 100svh;
+  }
+  .min-h-svh {
+    min-height: 100svh;
+  }
+
+  .pt-safe {
+    padding-top: var(--safe-top);
+  }
+  .pb-safe {
+    padding-bottom: var(--safe-bottom);
+  }
+  .pl-safe {
+    padding-left: var(--safe-left);
+  }
+  .pr-safe {
+    padding-right: var(--safe-right);
+  }
+  .px-safe {
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+  .py-safe {
+    padding-top: var(--safe-top);
+    padding-bottom: var(--safe-bottom);
+  }
+
+  .text-fluid-sm {
+    font-size: var(--text-fluid-sm);
+  }
+  .text-fluid-base {
+    font-size: var(--text-fluid-base);
+  }
+  .text-fluid-lg {
+    font-size: var(--text-fluid-lg);
+  }
+  .text-fluid-xl {
+    font-size: var(--text-fluid-xl);
+  }
+  .text-fluid-2xl {
+    font-size: var(--text-fluid-2xl);
+  }
+  .text-fluid-display {
+    font-size: var(--text-fluid-display);
+    font-variation-settings: "opsz" 144;
+  }
+
+  /* NJIT tartan-inspired hairline (subtle, used sparingly on dividers / hero edges).
+     Animated stripes are disabled under prefers-reduced-motion. */
+  .njit-tartan-rule {
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--color-brand-red) 0 2px,
+      transparent 2px 6px,
+      var(--color-brand-navy) 6px 8px,
+      transparent 8px 14px
+    );
+    background-size: 100% 100%;
+    height: 2px;
+    width: 100%;
+    border: 0;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 16px;
+}
+
+/* Editorial selection: red highlight on navy text reads as NJIT */
+::selection {
+  background: color-mix(in oklab, var(--color-brand-red) 80%, white);
+  color: var(--color-brand-white);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
