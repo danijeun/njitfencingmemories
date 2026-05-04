@@ -3,9 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-
-export const REACTION_EMOJIS = ["❤️", "🎉", "🔥", "💪", "🦅"] as const;
-export type ReactionEmoji = (typeof REACTION_EMOJIS)[number];
+import { REACTION_EMOJIS } from "@/components/memory/reactions";
 
 type Ok<T = object> = { ok: true } & T;
 type Err = { ok: false; error: string };

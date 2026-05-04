@@ -10,9 +10,8 @@ import {
   deleteComment,
   hideComment,
   toggleReaction,
-  REACTION_EMOJIS,
-  type ReactionEmoji,
 } from "@/app/(app)/memories/[id]/actions";
+import { REACTION_EMOJIS, type ReactionEmoji } from "@/components/memory/reactions";
 import { createClient } from "@/lib/supabase/client";
 import { useMemoryChannel } from "@/lib/realtime/useMemoryChannel";
 import { Textarea } from "@/components/ui/textarea";
