@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { Link } from "next-view-transitions";
-import { MessageCircle, Heart, Share2 } from "lucide-react";
+import { MessageCircle, Heart, Share2, Pin } from "lucide-react";
 import type { FeedItem } from "@/app/(app)/memories/feed";
+import { PinToggle } from "./PinToggle";
 
 function relativeTime(iso: string | null): string {
   if (!iso) return "";
@@ -41,8 +42,17 @@ function initials(name: string | null): string {
     .join("");
 }
 
-export function FeedCard({ memory, priority = false }: { memory: FeedItem; priority?: boolean }) {
+export function FeedCard({
+  memory,
+  priority = false,
+  isAdmin = false,
+}: {
+  memory: FeedItem;
+  priority?: boolean;
+  isAdmin?: boolean;
+}) {
   const { author } = memory;
+  const isPinned = Boolean(memory.pinned_at);
   const profileHref = author.slug ? `/profile/${author.slug}` : null;
   const stop = (e: React.MouseEvent) => e.stopPropagation();
 
@@ -107,11 +117,19 @@ export function FeedCard({ memory, priority = false }: { memory: FeedItem; prior
             >
               {relativeTime(memory.published_at)}
             </time>
-            {memory.era ? (
-              <span className="ml-auto rounded-full border border-[color:var(--color-rule)] px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-body)]">
-                Era {memory.era}
-              </span>
-            ) : null}
+            <span className="ml-auto flex items-center gap-2">
+              {isPinned ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-[color:var(--color-brand-red)] px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-brand-red)]">
+                  <Pin className="size-3" aria-hidden /> Pinned
+                </span>
+              ) : null}
+              {memory.era ? (
+                <span className="rounded-full border border-[color:var(--color-rule)] px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-body)]">
+                  Era {memory.era}
+                </span>
+              ) : null}
+              {isAdmin ? <PinToggle memoryId={memory.id} pinned={isPinned} /> : null}
+            </span>
           </div>
 
           {/* Title */}

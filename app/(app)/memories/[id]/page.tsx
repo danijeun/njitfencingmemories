@@ -3,6 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { MemoryBody } from "@/components/memory/MemoryBody";
+import {
+  MemoryThread,
+  type ThreadComment,
+  type ThreadReaction,
+  type ThreadViewer,
+} from "@/components/memory/MemoryThread";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +34,22 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
     const row = (data as { full_name: string; slug: string | null }[] | null)?.[0];
     author = row ? { full_name: row.full_name, slug: row.slug } : null;
   }
+
+  const [threadRes, reactionsRes, viewerProfileRes] = await Promise.all([
+    supabase.rpc("get_memory_thread", { p_memory_id: id }),
+    supabase.from("memory_reactions").select("emoji, author_id").eq("memory_id", id),
+    user
+      ? supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+  const initialComments = (threadRes.data ?? []) as ThreadComment[];
+  const initialReactions = (reactionsRes.data ?? []) as ThreadReaction[];
+  const viewer: ThreadViewer = user
+    ? {
+        id: user.id,
+        isAdmin: Boolean((viewerProfileRes.data as { is_admin?: boolean } | null)?.is_admin),
+      }
+    : null;
 
   const coverUrl = memory.cover_path
     ? supabase.storage.from("memory-covers").getPublicUrl(memory.cover_path).data.publicUrl
@@ -90,6 +112,12 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
         <div className="mt-8 text-base">
           <MemoryBody body={memory.body} />
         </div>
+        <MemoryThread
+          memoryId={memory.id}
+          initialComments={initialComments}
+          initialReactions={initialReactions}
+          viewer={viewer}
+        />
       </article>
     </main>
   );

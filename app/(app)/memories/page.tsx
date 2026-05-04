@@ -58,13 +58,14 @@ export default async function MemoriesPage({
     user
       ? supabase
           .from("profiles")
-          .select("full_name, avatar_path")
+          .select("full_name, avatar_path, is_admin")
           .eq("id", user.id)
           .maybeSingle()
           .then((r) => r.data)
       : Promise.resolve(null),
   ]);
   const eras = (eraRows ?? []) as EraCount[];
+  const isAdmin = Boolean(composerProfile?.is_admin);
   const composerName = composerProfile?.full_name ?? null;
   const composerAvatar = composerProfile?.avatar_path
     ? ((await signedAvatarUrls(supabase, [composerProfile.avatar_path])).get(
@@ -143,7 +144,7 @@ export default async function MemoriesPage({
             key={`${filters.sort}|${filters.roles.join(",")}|${filters.eras.join(",")}`}
             fallback={<FeedListSkeleton count={5} />}
           >
-            <FeedSection filters={filters} />
+            <FeedSection filters={filters} isAdmin={isAdmin} />
           </Suspense>
         </section>
 

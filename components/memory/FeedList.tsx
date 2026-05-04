@@ -8,15 +8,20 @@ import { FeedCard } from "./FeedCard";
 import { FeedSkeleton } from "./FeedSkeleton";
 
 export function FeedList({
+  pinned,
   initialItems,
   initialCursor,
   filters,
+  isAdmin,
 }: {
+  pinned: FeedItem[];
   initialItems: FeedItem[];
   initialCursor: FeedCursor;
   filters: FeedFilters;
+  isAdmin: boolean;
 }) {
   const filtersKey = JSON.stringify(filters);
+  const excludeIds = pinned.map((p) => p.id);
   const [items, setItems] = useState<FeedItem[]>(initialItems);
   const [cursor, setCursor] = useState<FeedCursor>(initialCursor);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +48,7 @@ export function FeedList({
     setError(null);
     startTransition(async () => {
       try {
-        const page = await loadMemoriesPage(filters, cursor);
+        const page = await loadMemoriesPage(filters, cursor, excludeIds);
         setItems((prev) => {
           const seen = new Set(prev.map((p) => p.id));
           return [...prev, ...page.items.filter((p) => !seen.has(p.id))];
@@ -55,7 +60,9 @@ export function FeedList({
         loadingRef.current = false;
       }
     });
-  }, [cursor, filters]);
+    // excludeIds changes only when `pinned` changes (server prop), which already
+    // forces a new client tree, so its identity is stable enough to omit here.
+  }, [cursor, filters, excludeIds]);
 
   useEffect(() => {
     const node = sentinelRef.current;
@@ -70,7 +77,7 @@ export function FeedList({
     return () => io.disconnect();
   }, [loadMore, cursor]);
 
-  if (items.length === 0 && !cursor) {
+  if (items.length === 0 && pinned.length === 0 && !cursor) {
     return (
       <div className="px-6 py-16 text-center">
         <p className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-body)]">
@@ -82,8 +89,11 @@ export function FeedList({
 
   return (
     <div>
+      {pinned.map((m, i) => (
+        <FeedCard key={`pin-${m.id}`} memory={m} priority={i < 2} isAdmin={isAdmin} />
+      ))}
       {items.map((m, i) => (
-        <FeedCard key={m.id} memory={m} priority={i < 2} />
+        <FeedCard key={m.id} memory={m} priority={pinned.length === 0 && i < 2} isAdmin={isAdmin} />
       ))}
 
       {cursor ? (
