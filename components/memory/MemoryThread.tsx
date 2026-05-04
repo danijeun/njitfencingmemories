@@ -268,7 +268,6 @@ export function MemoryThread({
 
   return (
     <section aria-label="Comments and reactions" className="pt-4">
-
       {/* Reactions */}
       <div className="flex flex-wrap items-center gap-2">
         {REACTION_EMOJIS.map((e) => {

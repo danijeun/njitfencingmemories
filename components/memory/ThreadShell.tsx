@@ -2,12 +2,7 @@
 
 import { cloneElement, isValidElement, useState, type ReactElement } from "react";
 import { MessageCircle } from "lucide-react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/lib/responsive/useMediaQuery";
 
 export function ThreadShell({
