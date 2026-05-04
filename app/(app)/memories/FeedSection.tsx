@@ -4,9 +4,11 @@ import { fetchFeedPage, fetchPinnedMemories, type FeedFilters } from "./feed";
 export async function FeedSection({
   filters,
   isAdmin,
+  isAuthed,
 }: {
   filters: FeedFilters;
   isAdmin: boolean;
+  isAuthed: boolean;
 }) {
   const pinned = await fetchPinnedMemories(filters);
   const excludeIds = pinned.map((p) => p.id);
@@ -18,6 +20,7 @@ export async function FeedSection({
       initialCursor={firstPage.nextCursor}
       filters={filters}
       isAdmin={isAdmin}
+      isAuthed={isAuthed}
     />
   );
 }

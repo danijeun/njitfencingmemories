@@ -19,6 +19,9 @@ export type FeedItem = {
   era: number | null;
   published_at: string | null;
   pinned_at: string | null;
+  comment_count: number;
+  like_count: number;
+  viewer_reacted: boolean;
   author: {
     id: string;
     full_name: string | null;
@@ -73,6 +76,9 @@ export async function fetchFeedPage(
     author_avatar_path: string | null;
     author_class_year: number | null;
     author_role: FeedRole | null;
+    comment_count: number | null;
+    like_count: number | null;
+    viewer_reacted: boolean | null;
   }>;
   const avatarMap = await signedAvatarUrls(
     supabase,
@@ -86,6 +92,9 @@ export async function fetchFeedPage(
     era: r.era,
     published_at: r.published_at,
     pinned_at: null,
+    comment_count: r.comment_count ?? 0,
+    like_count: r.like_count ?? 0,
+    viewer_reacted: r.viewer_reacted ?? false,
     cover_url: r.cover_path ? coverUrl(r.cover_path) : null,
     author: {
       id: r.author_id,
@@ -130,6 +139,9 @@ export async function fetchPinnedMemories(filters: FeedFilters): Promise<FeedIte
     author_avatar_path: string | null;
     author_class_year: number | null;
     author_role: FeedRole | null;
+    comment_count: number | null;
+    like_count: number | null;
+    viewer_reacted: boolean | null;
   }>;
   const avatarMap = await signedAvatarUrls(
     supabase,
@@ -143,6 +155,9 @@ export async function fetchPinnedMemories(filters: FeedFilters): Promise<FeedIte
     era: r.era,
     published_at: r.published_at,
     pinned_at: r.pinned_at,
+    comment_count: r.comment_count ?? 0,
+    like_count: r.like_count ?? 0,
+    viewer_reacted: r.viewer_reacted ?? false,
     cover_url: r.cover_path ? coverUrl(r.cover_path) : null,
     author: {
       id: r.author_id,

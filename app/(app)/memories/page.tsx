@@ -144,7 +144,7 @@ export default async function MemoriesPage({
             key={`${filters.sort}|${filters.roles.join(",")}|${filters.eras.join(",")}`}
             fallback={<FeedListSkeleton count={5} />}
           >
-            <FeedSection filters={filters} isAdmin={isAdmin} />
+            <FeedSection filters={filters} isAdmin={isAdmin} isAuthed={isAuthed} />
           </Suspense>
         </section>
 

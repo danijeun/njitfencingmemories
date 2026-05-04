@@ -129,6 +129,7 @@ export async function toggleReaction(
     const { error } = await supabase.from("memory_reactions").delete().eq("id", existing.id);
     if (error) return { ok: false, error: error.message };
     revalidatePath(`/memories/${parsed.data.memoryId}`);
+    revalidatePath("/memories");
     return { ok: true, reacted: false };
   }
 
@@ -140,5 +141,6 @@ export async function toggleReaction(
   if (error) return { ok: false, error: error.message };
 
   revalidatePath(`/memories/${parsed.data.memoryId}`);
+  revalidatePath("/memories");
   return { ok: true, reacted: true };
 }

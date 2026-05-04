@@ -13,12 +13,14 @@ export function FeedList({
   initialCursor,
   filters,
   isAdmin,
+  isAuthed,
 }: {
   pinned: FeedItem[];
   initialItems: FeedItem[];
   initialCursor: FeedCursor;
   filters: FeedFilters;
   isAdmin: boolean;
+  isAuthed: boolean;
 }) {
   const filtersKey = JSON.stringify(filters);
   const excludeIds = pinned.map((p) => p.id);
@@ -90,10 +92,22 @@ export function FeedList({
   return (
     <div>
       {pinned.map((m, i) => (
-        <FeedCard key={`pin-${m.id}`} memory={m} priority={i < 2} isAdmin={isAdmin} />
+        <FeedCard
+          key={`pin-${m.id}`}
+          memory={m}
+          priority={i < 2}
+          isAdmin={isAdmin}
+          isAuthed={isAuthed}
+        />
       ))}
       {items.map((m, i) => (
-        <FeedCard key={m.id} memory={m} priority={pinned.length === 0 && i < 2} isAdmin={isAdmin} />
+        <FeedCard
+          key={m.id}
+          memory={m}
+          priority={pinned.length === 0 && i < 2}
+          isAdmin={isAdmin}
+          isAuthed={isAuthed}
+        />
       ))}
 
       {cursor ? (

@@ -9,6 +9,7 @@ import {
   type ThreadReaction,
   type ThreadViewer,
 } from "@/components/memory/MemoryThread";
+import { ThreadShell } from "@/components/memory/ThreadShell";
 
 export const dynamic = "force-dynamic";
 
@@ -63,9 +64,12 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
     ? supabase.storage.from("memory-covers").getPublicUrl(memory.cover_path).data.publicUrl
     : null;
 
+  const initialCommentCount = initialComments.filter((c) => !c.hidden_at).length;
+
   return (
     <main className="flex-1 px-4 py-10 sm:px-6 lg:px-10">
-      <article className="mx-auto max-w-2xl">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[minmax(0,640px)_380px]">
+      <article className="min-w-0">
         <div className="flex items-center justify-between gap-4">
           <Link
             href="/memories"
@@ -120,13 +124,16 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
         <div className="mt-8 text-base">
           <MemoryBody body={memory.body} />
         </div>
+      </article>
+      <ThreadShell initialCount={initialCommentCount}>
         <MemoryThread
           memoryId={memory.id}
           initialComments={initialComments}
           initialReactions={initialReactions}
           viewer={viewer}
         />
-      </article>
+      </ThreadShell>
+      </div>
     </main>
   );
 }

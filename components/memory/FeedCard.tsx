@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Link } from "next-view-transitions";
-import { MessageCircle, Heart, Share2, Pin } from "lucide-react";
+import { Pin } from "lucide-react";
 import type { FeedItem } from "@/app/(app)/memories/feed";
 import { PinToggle } from "./PinToggle";
+import { FeedCardActions } from "./FeedCardActions";
 
 function relativeTime(iso: string | null): string {
   if (!iso) return "";
@@ -46,10 +47,12 @@ export function FeedCard({
   memory,
   priority = false,
   isAdmin = false,
+  isAuthed = false,
 }: {
   memory: FeedItem;
   priority?: boolean;
   isAdmin?: boolean;
+  isAuthed?: boolean;
 }) {
   const { author } = memory;
   const isPinned = Boolean(memory.pinned_at);
@@ -159,41 +162,13 @@ export function FeedCard({
             </div>
           ) : null}
 
-          {/* Action row (placeholders) */}
-          <div className="mt-3 flex items-center gap-6 text-[color:var(--color-body)]">
-            <button
-              type="button"
-              onClick={stop}
-              disabled
-              aria-label="Comments (coming soon)"
-              className="pointer-events-auto relative flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <MessageCircle className="size-4" aria-hidden />
-              <span className="tabular-nums">0</span>
-            </button>
-            <button
-              type="button"
-              onClick={stop}
-              disabled
-              aria-label="React (coming soon)"
-              className="pointer-events-auto relative flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Heart className="size-4" aria-hidden />
-              <span className="tabular-nums">0</span>
-            </button>
-            <button
-              type="button"
-              onClick={stop}
-              disabled
-              aria-label="Share (coming soon)"
-              className="pointer-events-auto relative flex items-center gap-1.5 text-xs hover:text-[color:var(--color-brand-red)] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Share2 className="size-4" aria-hidden />
-            </button>
-            <span className="ml-auto font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-body)]">
-              Read →
-            </span>
-          </div>
+          <FeedCardActions
+            memoryId={memory.id}
+            initialLikeCount={memory.like_count}
+            initialReacted={memory.viewer_reacted}
+            commentCount={memory.comment_count}
+            canReact={isAuthed}
+          />
         </div>
       </article>
     </div>

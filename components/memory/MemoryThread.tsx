@@ -76,11 +76,13 @@ export function MemoryThread({
   initialComments,
   initialReactions,
   viewer,
+  onCountChange,
 }: {
   memoryId: string;
   initialComments: ThreadComment[];
   initialReactions: ThreadReaction[];
   viewer: ThreadViewer;
+  onCountChange?: (n: number) => void;
 }) {
   const [comments, setComments] = useState<LocalComment[]>(initialComments);
   const [reactions, setReactions] = useState<ThreadReaction[]>(initialReactions);
@@ -89,6 +91,12 @@ export function MemoryThread({
   const [announce, setAnnounce] = useState("");
   const [supabase] = useState(() => createClient());
   const [keyboardInset, setKeyboardInset] = useState(0);
+
+  useEffect(() => {
+    if (!onCountChange) return;
+    const visible = comments.filter((c) => !c.hidden_at).length;
+    onCountChange(visible);
+  }, [comments, onCountChange]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.visualViewport) return;
@@ -259,11 +267,8 @@ export function MemoryThread({
   };
 
   return (
-    <section
-      aria-label="Comments and reactions"
-      className="mt-12 border-t border-[color:var(--color-rule)] pt-8"
-      style={{ minHeight: "12rem" }}
-    >
+    <section aria-label="Comments and reactions" className="pt-4">
+
       {/* Reactions */}
       <div className="flex flex-wrap items-center gap-2">
         {REACTION_EMOJIS.map((e) => {
@@ -292,8 +297,7 @@ export function MemoryThread({
       </div>
 
       {/* Composer */}
-      <div className="mt-8">
-        <h2 className="font-display text-2xl text-[color:var(--color-ink)]">Comments</h2>
+      <div className="mt-6">
         {viewer ? (
           <form
             onSubmit={(e) => {
