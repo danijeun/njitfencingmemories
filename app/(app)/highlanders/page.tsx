@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { signedAvatarUrls } from "@/lib/storage/avatars";
-import { AlumniCard } from "@/components/profile/AlumniCard";
+import { HighlanderCard } from "@/components/profile/HighlanderCard";
 import {
   DirectoryFilters,
   type DirectoryFilterValues,
@@ -36,7 +36,7 @@ function activeCount(v: DirectoryFilterValues) {
   return n;
 }
 
-export default async function AlumniPage({
+export default async function HighlandersPage({
   searchParams,
 }: {
   searchParams: Promise<RawSearchParams>;
@@ -88,7 +88,7 @@ export default async function AlumniPage({
               The roster
             </p>
             <h1 className="mt-3 font-display text-4xl leading-[1.05] text-[color:var(--color-ink)] sm:text-5xl">
-              Alumni
+              Highlanders
             </h1>
           </div>
           <DirectoryFiltersSheet activeCount={count}>
@@ -122,7 +122,7 @@ export default async function AlumniPage({
               <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {profiles.map((p) => (
                   <li key={p.id}>
-                    <AlumniCard
+                    <HighlanderCard
                       profile={p}
                       avatarUrl={p.avatar_path ? (avatarMap.get(p.avatar_path) ?? null) : null}
                     />

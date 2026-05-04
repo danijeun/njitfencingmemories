@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "6mb",
     },
   },
+  async redirects() {
+    return [{ source: "/alumni", destination: "/highlanders", permanent: true }];
+  },
   images: {
     remotePatterns: [
       {

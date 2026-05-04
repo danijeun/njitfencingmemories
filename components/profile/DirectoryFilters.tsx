@@ -22,7 +22,7 @@ export function DirectoryFilters({
     "h-9 w-full rounded-md border border-[color:var(--color-rule)] bg-[color:var(--color-ivory)] px-3 text-sm text-[color:var(--color-ink)]";
 
   return (
-    <form action="/alumni" method="get" className={cn("flex flex-col gap-4", className)}>
+    <form action="/highlanders" method="get" className={cn("flex flex-col gap-4", className)}>
       <label className="flex flex-col gap-1.5">
         <span className={labelCls}>Name</span>
         <Input
@@ -70,7 +70,7 @@ export function DirectoryFilters({
           Apply
         </Button>
         <Link
-          href="/alumni"
+          href="/highlanders"
           className="font-mono text-[11px] uppercase tracking-widest text-[color:var(--color-body)] underline decoration-[color:var(--color-rule)] underline-offset-4 hover:text-[color:var(--color-oxblood)]"
         >
           Reset

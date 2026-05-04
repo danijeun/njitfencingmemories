@@ -38,8 +38,8 @@ const ITEMS: Item[] = [
     auth: "any",
   },
   {
-    label: "Alumni directory",
-    href: "/alumni",
+    label: "Highlanders directory",
+    href: "/highlanders",
     icon: Users,
     keywords: ["roster", "people", "directory"],
     auth: "in",

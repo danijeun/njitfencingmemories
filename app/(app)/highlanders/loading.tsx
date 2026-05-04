@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlumniGridSkeleton } from "@/components/skeletons/AlumniGridSkeleton";
+import { HighlandersGridSkeleton } from "@/components/skeletons/HighlandersGridSkeleton";
 
 export default function Loading() {
   return (
@@ -8,7 +8,7 @@ export default function Loading() {
         <Skeleton className="h-3 w-32" />
         <Skeleton className="h-9 w-56" />
         <Skeleton className="h-12 w-full rounded-md" />
-        <AlumniGridSkeleton count={12} />
+        <HighlandersGridSkeleton count={12} />
       </div>
     </main>
   );

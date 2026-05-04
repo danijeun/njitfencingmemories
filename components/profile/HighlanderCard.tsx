@@ -25,7 +25,13 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-export function AlumniCard({ profile, avatarUrl }: { profile: Profile; avatarUrl: string | null }) {
+export function HighlanderCard({
+  profile,
+  avatarUrl,
+}: {
+  profile: Profile;
+  avatarUrl: string | null;
+}) {
   const href = profile.slug ? `/profile/${profile.slug}` : "#";
   return (
     <Link

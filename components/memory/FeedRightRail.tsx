@@ -6,7 +6,7 @@ import type { EraCount } from "./TimelineRail";
 export async function FeedRightRail({ eras }: { eras: EraCount[] }) {
   const supabase = await createClient();
 
-  // Suggested alumni: most-recent distinct authors of published memories.
+  // Suggested highlanders: most-recent distinct authors of published memories.
   const { data: recent } = await supabase
     .from("memories")
     .select("author_id, published_at")
@@ -89,7 +89,7 @@ export async function FeedRightRail({ eras }: { eras: EraCount[] }) {
         </h2>
         <ul className="mt-3 space-y-3">
           {ordered.length === 0 ? (
-            <li className="text-xs text-[color:var(--color-body)]">No alumni yet.</li>
+            <li className="text-xs text-[color:var(--color-body)]">No highlanders yet.</li>
           ) : (
             ordered.map((p) => {
               const url = p.avatar_path ? avatars.get(p.avatar_path) : null;

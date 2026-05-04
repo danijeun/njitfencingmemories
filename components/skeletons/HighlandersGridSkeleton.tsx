@@ -1,9 +1,9 @@
 import { Skeleton, SkeletonRegion } from "@/components/ui/skeleton";
 
-export function AlumniGridSkeleton({ count = 12 }: { count?: number }) {
+export function HighlandersGridSkeleton({ count = 12 }: { count?: number }) {
   return (
     <SkeletonRegion
-      label="Loading alumni"
+      label="Loading highlanders"
       className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
       {Array.from({ length: count }).map((_, i) => (

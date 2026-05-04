@@ -31,7 +31,7 @@ export async function TopNav() {
     ? [
         { href: "/memories", label: "Memories" },
         { href: "/gallery", label: "Gallery" },
-        { href: "/alumni", label: "Alumni" },
+        { href: "/highlanders", label: "Highlanders" },
         { href: profileHref, label: "Profile" },
         ...(isAdmin ? [{ href: "/admin/roster", label: "Admin" }] : []),
       ]
