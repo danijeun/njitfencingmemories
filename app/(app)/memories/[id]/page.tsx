@@ -35,21 +35,29 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
     author = row ? { full_name: row.full_name, slug: row.slug } : null;
   }
 
-  const [threadRes, reactionsRes, viewerProfileRes] = await Promise.all([
-    supabase.rpc("get_memory_thread", { p_memory_id: id }),
-    supabase.from("memory_reactions").select("emoji, author_id").eq("memory_id", id),
-    user
-      ? supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle()
-      : Promise.resolve({ data: null }),
-  ]);
-  const initialComments = (threadRes.data ?? []) as ThreadComment[];
-  const initialReactions = (reactionsRes.data ?? []) as ThreadReaction[];
-  const viewer: ThreadViewer = user
-    ? {
-        id: user.id,
-        isAdmin: Boolean((viewerProfileRes.data as { is_admin?: boolean } | null)?.is_admin),
-      }
-    : null;
+  let initialComments: ThreadComment[] = [];
+  let initialReactions: ThreadReaction[] = [];
+  let viewer: ThreadViewer = null;
+  try {
+    const [threadRes, reactionsRes, viewerProfileRes] = await Promise.all([
+      supabase.rpc("get_memory_thread", { p_memory_id: id }),
+      supabase.from("memory_reactions").select("emoji, author_id").eq("memory_id", id),
+      user
+        ? supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+    initialComments = (threadRes.data ?? []) as ThreadComment[];
+    initialReactions = (reactionsRes.data ?? []) as ThreadReaction[];
+    viewer = user
+      ? {
+          id: user.id,
+          isAdmin: Boolean((viewerProfileRes.data as { is_admin?: boolean } | null)?.is_admin),
+        }
+      : null;
+  } catch (err) {
+    console.error("[memory-detail] thread fetch failed", err);
+    viewer = user ? { id: user.id, isAdmin: false } : null;
+  }
 
   const coverUrl = memory.cover_path
     ? supabase.storage.from("memory-covers").getPublicUrl(memory.cover_path).data.publicUrl

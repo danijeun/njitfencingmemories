@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import type {
   RealtimePostgresInsertPayload,
   RealtimePostgresUpdatePayload,
@@ -38,7 +38,7 @@ export type MemoryChannelHandlers = {
 
 export function useMemoryChannel(memoryId: string, handlers: MemoryChannelHandlers) {
   const ref = useRef(handlers);
-  useLayoutEffect(() => {
+  useEffect(() => {
     ref.current = handlers;
   });
 

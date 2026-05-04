@@ -125,10 +125,15 @@ export function MemoryThread({
   useMemoryChannel(memoryId, {
     onCommentInsert: async (row) => {
       if (row.author_id === viewer?.id) return; // self-echo handled optimistically
-      const { data } = await supabase.rpc("get_public_profile", {
-        p_id: row.author_id,
-      });
-      const author = (data as ThreadComment[] | null)?.[0];
+      let author: ThreadComment | undefined;
+      try {
+        const { data } = await supabase.rpc("get_public_profile", {
+          p_id: row.author_id,
+        });
+        author = (data as ThreadComment[] | null)?.[0];
+      } catch {
+        // attribution lookup failed; fall through with defaults
+      }
       const next: ThreadComment = {
         comment_id: row.id,
         body: row.body,
