@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { buildSlug } from "@/lib/auth/slug";
+import { buildSlug, ensureUniqueSlug } from "@/lib/auth/slug";
 import { nextStepPath, type OnboardingStep } from "@/lib/auth/profile";
 
 async function requireUser() {
@@ -12,25 +12,6 @@ async function requireUser() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   return { supabase, user };
-}
-
-async function ensureUniqueSlug(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  base: string,
-  selfId: string,
-): Promise<string> {
-  let slug = base;
-  let n = 2;
-  while (true) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("slug", slug)
-      .neq("id", selfId)
-      .maybeSingle();
-    if (!data) return slug;
-    slug = `${base}-${n++}`;
-  }
 }
 
 export async function saveClass(formData: FormData) {

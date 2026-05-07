@@ -1,8 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { autosaveDraft } from "@/app/(app)/memories/new/actions";
+import { AutosavePill } from "@/components/editor/AutosavePill";
+import { useAutosave } from "@/components/editor/useAutosave";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +54,24 @@ export function EditMemoryClient({ initial }: { initial: EditMemoryInitial }) {
   const [coverPath, setCoverPath] = useState<string | null>(initial.cover_path ?? null);
   const [pending, startTransition] = useTransition();
   const [deleting, startDelete] = useTransition();
+
+  const payload = useMemo(
+    () => ({
+      title,
+      excerpt,
+      era: era ? Number(era) : null,
+      body,
+      cover_path: coverPath,
+    }),
+    [title, excerpt, era, body, coverPath],
+  );
+
+  const autosave = useAutosave({
+    initialId: initial.id,
+    payload,
+    save: autosaveDraft,
+    enabled: title.trim().length > 0,
+  });
 
   const submit = (publish: boolean) => {
     if (!title.trim()) {
@@ -146,7 +167,12 @@ export function EditMemoryClient({ initial }: { initial: EditMemoryInitial }) {
         <Button type="button" disabled={pending} onClick={() => submit(true)}>
           {pending ? "Saving…" : initial.status === "published" ? "Save changes" : "Publish"}
         </Button>
-        <div className="ms-auto">
+        <div className="ms-auto flex items-center gap-3">
+          <AutosavePill
+            status={autosave.status}
+            savedAt={autosave.savedAt}
+            error={autosave.error}
+          />
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button type="button" variant="oxblood" disabled={deleting}>

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { buildSlug } from "@/lib/auth/slug";
+import { buildSlug, ensureUniqueSlug } from "@/lib/auth/slug";
 
 export async function saveProfile(formData: FormData) {
   const supabase = await createClient();
@@ -44,13 +44,7 @@ export async function saveProfile(formData: FormData) {
   }
 
   const baseSlug = buildSlug(fullName, classYear);
-  const { data: existing } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("slug", baseSlug)
-    .neq("id", user.id)
-    .maybeSingle();
-  update.slug = existing ? `${baseSlug}-${user.id.slice(0, 4)}` : baseSlug;
+  update.slug = await ensureUniqueSlug(supabase, baseSlug, user.id);
 
   await supabase.from("profiles").update(update).eq("id", user.id);
   redirect("/profile/me");

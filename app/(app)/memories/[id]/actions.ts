@@ -144,3 +144,35 @@ export async function toggleReaction(
   revalidatePath("/memories");
   return { ok: true, reacted: true };
 }
+
+const FLAG_REASONS = ["spam", "harassment", "off-topic", "other"] as const;
+
+const flagMemorySchema = z.object({
+  memoryId: z.string().uuid(),
+  reason: z.enum(FLAG_REASONS),
+  note: z.string().trim().max(1000).optional(),
+});
+
+export async function flagMemory(input: z.infer<typeof flagMemorySchema>): Promise<Ok | Err> {
+  const parsed = flagMemorySchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Invalid input" };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Not signed in" };
+
+  const { error } = await supabase.from("memory_flags").insert({
+    memory_id: parsed.data.memoryId,
+    reporter_id: user.id,
+    reason: parsed.data.reason,
+    note: parsed.data.note ? parsed.data.note : null,
+  });
+  if (error) {
+    if (error.code === "23505") return { ok: false, error: "You've already reported this memory." };
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}

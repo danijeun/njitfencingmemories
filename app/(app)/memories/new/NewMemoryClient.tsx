@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CoverPicker } from "@/components/memory/CoverPicker";
-import { createMemory } from "./actions";
+import { AutosavePill } from "@/components/editor/AutosavePill";
+import { useAutosave } from "@/components/editor/useAutosave";
+import { autosaveDraft, createMemory } from "./actions";
 
 const MemoryEditor = dynamic(
   () => import("@/components/editor/MemoryEditor").then((m) => m.MemoryEditor),
@@ -25,6 +27,24 @@ export function NewMemoryClient() {
   const [body, setBody] = useState<object>({ type: "doc", content: [{ type: "paragraph" }] });
   const [coverPath, setCoverPath] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+
+  const payload = useMemo(
+    () => ({
+      title,
+      excerpt,
+      era: era ? Number(era) : null,
+      body,
+      cover_path: coverPath,
+    }),
+    [title, excerpt, era, body, coverPath],
+  );
+
+  const autosave = useAutosave({
+    initialId: null,
+    payload,
+    save: autosaveDraft,
+    enabled: title.trim().length > 0,
+  });
 
   const submit = (publish: boolean) => {
     if (!title.trim()) {
@@ -99,13 +119,20 @@ export function NewMemoryClient() {
         <MemoryEditor onChange={setBody} placeholder="Tell the story…" />
       </div>
 
-      <div className="sticky bottom-0 -mx-4 mt-2 flex gap-3 border-t border-[color:var(--color-rule)] bg-[color:var(--color-ivory)]/90 px-4 py-3 pb-safe backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:p-0 md:pb-0">
+      <div className="sticky bottom-0 -mx-4 mt-2 flex flex-wrap items-center gap-3 border-t border-[color:var(--color-rule)] bg-[color:var(--color-ivory)]/90 px-4 py-3 pb-safe backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:p-0 md:pb-0">
         <Button type="button" variant="outline" disabled={pending} onClick={() => submit(false)}>
           Save draft
         </Button>
         <Button type="button" disabled={pending} onClick={() => submit(true)}>
           {pending ? "Publishing…" : "Publish"}
         </Button>
+        <div className="ms-auto">
+          <AutosavePill
+            status={autosave.status}
+            savedAt={autosave.savedAt}
+            error={autosave.error}
+          />
+        </div>
       </div>
     </div>
   );

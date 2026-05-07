@@ -89,6 +89,12 @@ export default async function AdminRequestsPage({ searchParams }: { searchParams
             Roster →
           </Link>
           <Link
+            href="/admin/moderation"
+            className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
+          >
+            Moderation →
+          </Link>
+          <Link
             href="/admin/audit"
             className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-ink)] hover:opacity-70"
           >

@@ -10,6 +10,7 @@ import {
   type ThreadViewer,
 } from "@/components/memory/MemoryThread";
 import { ThreadShell } from "@/components/memory/ThreadShell";
+import { FlagButton } from "@/components/memory/FlagButton";
 
 export const dynamic = "force-dynamic";
 
@@ -77,15 +78,18 @@ export default async function MemoryDetailPage({ params }: { params: Promise<{ i
             >
               ← All memories
             </Link>
-            {canEdit ? (
-              <Link
-                href={`/memories/${memory.id}/edit`}
-                className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-brand-red)] hover:opacity-70"
-              >
-                Edit
-                {memory.status === "draft" ? " (draft)" : ""}
-              </Link>
-            ) : null}
+            <div className="flex items-center gap-4">
+              {user && !canEdit ? <FlagButton memoryId={memory.id} /> : null}
+              {canEdit ? (
+                <Link
+                  href={`/memories/${memory.id}/edit`}
+                  className="font-mono text-xs uppercase tracking-widest text-[color:var(--color-brand-red)] hover:opacity-70"
+                >
+                  Edit
+                  {memory.status === "draft" ? " (draft)" : ""}
+                </Link>
+              ) : null}
+            </div>
           </div>
           <p className="mt-6 font-mono text-xs uppercase tracking-widest text-[color:var(--color-body)]">
             {memory.era ?? ""}
